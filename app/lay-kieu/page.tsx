@@ -13,6 +13,7 @@ import {
 
 export default function LayKieuPage() {
   const [loading, setLoading] = useState(false)
+  const [analyzing, setAnalyzing] = useState(false)
   const [count, setCount] = useState('1')
   const [data, setData] = useState<{
     results: Array<{
@@ -22,6 +23,7 @@ export default function LayKieuPage() {
     }>
     combinedResult: string
   } | null>(null)
+  const [analysis, setAnalysis] = useState<string | null>(null)
 
   const generateLayKieu = async () => {
     try {
@@ -31,11 +33,36 @@ export default function LayKieuPage() {
 
       if (responseData.success) {
         setData(responseData.data)
+        setAnalysis(null) // Reset analysis when new result is generated
       }
     } catch (error) {
       console.error('Error:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const analyzeResult = async () => {
+    if (!data?.combinedResult) return
+
+    try {
+      setAnalyzing(true)
+      const response = await fetch('/api/analyze-lay-kieu', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: data.combinedResult }),
+      })
+      const responseData = await response.json()
+
+      if (responseData.success) {
+        setAnalysis(responseData.data)
+      }
+    } catch (error) {
+      console.error('Error analyzing:', error)
+    } finally {
+      setAnalyzing(false)
     }
   }
 
@@ -88,18 +115,31 @@ export default function LayKieuPage() {
 
           {data && (
             <div className="space-y-8">
-              {data.results.length > 1 && (
-                <Card className="bg-white/80 backdrop-blur border-amber-200">
-                  <CardHeader>
-                    <CardTitle className="text-amber-800">Kết quả tổng hợp</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-lg text-amber-900 whitespace-pre-line">
-                      {data.combinedResult}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+              <Card className="bg-white/80 backdrop-blur border-amber-200">
+                <CardHeader>
+                  <CardTitle className="text-amber-800">Kết quả tổng hợp</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-amber-900 whitespace-pre-line">
+                    {data.combinedResult}
+                  </p>
+                  <div className="mt-4">
+                    <Button
+                      onClick={analyzeResult}
+                      disabled={analyzing}
+                      className="bg-amber-500 hover:bg-amber-600 text-white"
+                    >
+                      {analyzing ? 'Đang phân tích...' : 'Phân tích với Gemini'}
+                    </Button>
+                  </div>
+                  {analysis && (
+                    <div className="mt-4 p-4 bg-amber-50 rounded-lg">
+                      <h3 className="font-semibold text-amber-800 mb-2">Phân tích:</h3>
+                      <p className="text-amber-900 whitespace-pre-line">{analysis}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
               {data.results.map((result, index) => (
                 <Card key={index} className="bg-white/80 backdrop-blur border-amber-200">

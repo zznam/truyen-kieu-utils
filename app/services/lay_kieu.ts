@@ -1,5 +1,4 @@
-import { readFileSync } from 'fs'
-import { join } from 'path'
+import { truyenKieuVerses } from '../data/truyen-kieu'
 
 interface Verse {
   number: number
@@ -13,46 +12,23 @@ let verses: Verse[] = []
 
 // Clean up verse content by removing verse numbers
 function cleanVerseContent(content: string): string {
-  // Remove any number followed by a dot at the start of the line
-  return content.replace(/^\d+\.\s*/, '').trim()
+  return content.trim()
 }
 
 // Load and process Truyện Kiều data
 export function loadVerses() {
   if (verses.length > 0) return verses
 
-  const filePath = join(process.cwd(), 'data', 'truyen_kieu_data.txt')
-  const content = readFileSync(filePath, 'utf-8')
-
-  verses = content
-    .split('\n')
-    .filter(line => line.trim())
-    .map(line => {
-      // Handle lines that don't have the expected format
-      const parts = line.split('..')
-      if (parts.length < 2) {
-        // If no separator found, treat the whole line as content
-        const content = cleanVerseContent(line.trim())
-        return {
-          number: verses.length + 1,
-          content,
-          rhyme: extractRhyme(content),
-          wordCount: countWords(content),
-          isEven: (verses.length + 1) % 2 === 0,
-        }
-      }
-
-      const [number, content] = parts
-      const cleanedContent = cleanVerseContent(content.trim())
-      const verseNumber = parseInt(number) || verses.length + 1
-      return {
-        number: verseNumber,
-        content: cleanedContent,
-        rhyme: extractRhyme(cleanedContent),
-        wordCount: countWords(cleanedContent),
-        isEven: verseNumber % 2 === 0,
-      }
-    })
+  verses = truyenKieuVerses.map(verse => {
+    const cleanedContent = cleanVerseContent(verse.text)
+    return {
+      number: verse.id,
+      content: cleanedContent,
+      rhyme: extractRhyme(cleanedContent),
+      wordCount: countWords(cleanedContent),
+      isEven: verse.id % 2 === 0,
+    }
+  })
 
   return verses
 }

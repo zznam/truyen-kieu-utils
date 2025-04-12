@@ -2922,7 +2922,7 @@ export const truyenKieuVerses = [
   { id: 2923, text: 'Thúc rằng: Gặp buổi loạn ly,' },
   { id: 2924, text: 'Trong quân tôi hỏi thiếu gì tóc tơ .' },
   { id: 2925, text: 'Đại vương tên Hải họ Từ,' },
-  { id: 2926, text: ' Đánh quen trăm trận sức dư muôn ngườị' },
+  { id: 2926, text: ' Đánh quen trăm trận sức dư muôn người' },
   { id: 2927, text: 'Gặp nàng khi ở châu Thai,' },
   { id: 2928, text: 'Lạ gì quốc sắc thiên tài phải duyên .' },
   { id: 2929, text: 'Vẫy vùng trong bấy nhiêu niên,' },
