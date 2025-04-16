@@ -130,3 +130,65 @@ export async function getLayKieuInterpretation(verse: string) {
     return 'Đã xảy ra lỗi khi giải đoán câu Kiều. Vui lòng thử lại sau.'
   }
 }
+
+export async function getVerseExplanation(verse: string) {
+  try {
+    if (!GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY is not set')
+      return 'Lỗi: API key chưa được cấu hình.'
+    }
+
+    const requestBody = {
+      contents: [
+        {
+          parts: [
+            {
+              text: `Bạn là một chuyên gia về Truyện Kiều của Nguyễn Du.
+              Hãy giải thích ý nghĩa và ngữ cảnh của câu Kiều sau đây.
+              Trả lời phải được định dạng bằng Markdown với cấu trúc sau:
+
+              ## Ý nghĩa câu thơ
+              *Giải thích ý nghĩa đen và ý nghĩa bóng của câu thơ*
+
+              ## Bối cảnh trong truyện
+              *Đoạn này nằm trong tình huống gì của câu chuyện*
+
+              ## Điển tích & điển cố
+              *Liệt kê và giải thích các điển tích, điển cố nếu có*
+
+              Câu Kiều: "${verse}"
+
+              Trả lời bằng tiếng Việt, chi tiết nhưng súc tích.`,
+            },
+          ],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+      },
+    }
+
+    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Gemini API error:', errorData)
+      return `Lỗi API: ${errorData.error?.message || 'Không thể kết nối đến Gemini API'}`
+    }
+
+    const data = await response.json()
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Không thể giải thích câu Kiều này.'
+  } catch (error) {
+    console.error('Error fetching explanation:', error)
+    return 'Đã xảy ra lỗi khi giải thích câu Kiều. Vui lòng thử lại sau.'
+  }
+}

@@ -21,6 +21,12 @@ export function Header() {
             >
               Lẩy Kiều
             </Link>
+            <Link
+              href="/full"
+              className="transition-colors hover:text-foreground/80 text-foreground"
+            >
+              Toàn Văn
+            </Link>
           </nav>
         </div>
       </div>
