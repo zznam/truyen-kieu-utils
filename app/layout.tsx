@@ -1,48 +1,43 @@
-import type React from 'react'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import '@fontsource-variable/noto-sans'
+import '@fontsource-variable/noto-sans/wght-italic.css'
+import '@fontsource-variable/noto-serif'
+import '@fontsource-variable/noto-serif/wght-italic.css'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
+import { LibraryProvider } from '@/components/library-provider'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-
-const inter = Inter({ subsets: ['latin'] })
+import { Toaster } from '@/components/ui/sonner'
 
 export const metadata: Metadata = {
-  title: 'Bói Kiều - Khám phá vận mệnh qua Truyện Kiều',
+  title: { default: 'Kiều — Một di sản, vạn cảm hứng', template: '%s | Kiều' },
   description:
-    'Ứng dụng xem bói Kiều trực tuyến dựa trên tác phẩm Truyện Kiều của đại thi hào Nguyễn Du',
-  generator: 'v0.dev',
+    'Đọc Truyện Kiều, tìm câu thơ yêu thích, lưu dấu trang và khám phá Bói Kiều, Lẩy Kiều trong một không gian dành cho văn chương Việt.',
 }
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="vi" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          forcedTheme="light"
-          enableSystem={false}
+          enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col">
-            <div className="container mx-auto px-4 py-2">
-              <Header />
-            </div>
-            <main className="flex-1 container mx-auto px-4">{children}</main>
-            <div className="container mx-auto px-4 py-2">
-              <Footer />
-            </div>
-          </div>
+          <LibraryProvider>
+            <a href="#main-content" className="skip-link">
+              Đến nội dung chính
+            </a>
+            <Header />
+            <main id="main-content" tabIndex={-1}>
+              {children}
+            </main>
+            <Footer />
+            <Toaster richColors position="bottom-right" />
+          </LibraryProvider>
         </ThemeProvider>
       </body>
     </html>
   )
 }
-
-import './globals.css'

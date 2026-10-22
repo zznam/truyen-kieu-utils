@@ -1,94 +1,74 @@
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
+import { ArrowRight, BookOpen, Heart, ShieldCheck } from 'lucide-react'
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 py-12">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto">
-          <Card className="bg-white/90 backdrop-blur border-amber-200 mb-8">
-            <CardHeader>
-              <CardTitle className="text-2xl text-amber-800">Về Bói Kiều</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-amber-900">
-              <p>
-                Bói Kiều là một phương pháp bói toán dân gian của người Việt, sử dụng các câu thơ
-                trong tác phẩm Truyện Kiều của đại thi hào Nguyễn Du để giải đoán vận mệnh và đưa ra
-                lời khuyên cho người xem bói.
-              </p>
-
-              <p>
-                Truyện Kiều, hay còn gọi là Đoạn Trường Tân Thanh, là một kiệt tác văn học Việt Nam
-                được sáng tác vào đầu thế kỷ 19. Tác phẩm gồm 3254 câu thơ lục bát, kể về cuộc đời
-                đầy biến cố của nàng Thúy Kiều.
-              </p>
-
-              <p>
-                Phương pháp bói Kiều đã tồn tại trong văn hóa Việt Nam từ lâu đời, phản ánh tầm ảnh
-                hưởng sâu rộng của Truyện Kiều đối với đời sống tinh thần của người Việt. Người xem
-                bói thường đặt một câu hỏi trong lòng, sau đó mở ngẫu nhiên một trang trong Truyện
-                Kiều và đọc câu thơ hiện ra để giải đoán.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/90 backdrop-blur border-amber-200 mb-8">
-            <CardHeader>
-              <CardTitle className="text-2xl text-amber-800">Ý nghĩa văn hóa</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-amber-900">
-              <p>
-                Bói Kiều không chỉ đơn thuần là một hình thức bói toán mà còn là cách người Việt tìm
-                đến văn chương để giải tỏa tâm tư, tìm kiếm lời khuyên và sự an ủi trong cuộc sống.
-              </p>
-
-              <p>
-                Truyện Kiều chứa đựng nhiều triết lý nhân sinh sâu sắc về số phận, tình yêu, đạo đức
-                và các giá trị truyền thống. Vì vậy, các câu thơ trong Truyện Kiều thường có thể áp
-                dụng vào nhiều hoàn cảnh khác nhau của cuộc sống.
-              </p>
-
-              <p>
-                Ngày nay, Bói Kiều vẫn được nhiều người Việt Nam thực hành, đặc biệt là vào dịp đầu
-                năm mới hoặc khi họ đối mặt với những quyết định quan trọng trong cuộc sống.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/90 backdrop-blur border-amber-200">
-            <CardHeader>
-              <CardTitle className="text-2xl text-amber-800">Cách thức xem bói</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-amber-900">
-              <p>Truyền thống xem bói Kiều thường được thực hiện như sau:</p>
-
-              <ol className="list-decimal pl-5 space-y-2">
-                <li>
-                  Người xem bói tập trung suy nghĩ về vấn đề đang gặp phải hoặc câu hỏi muốn được
-                  giải đáp.
-                </li>
-                <li>
-                  Sau đó, họ mở ngẫu nhiên một trang trong cuốn Truyện Kiều và đọc câu thơ hiện ra.
-                </li>
-                <li>
-                  Ý nghĩa của câu thơ được giải thích trong ngữ cảnh của câu hỏi để đưa ra lời
-                  khuyên hoặc dự đoán.
-                </li>
-              </ol>
-
-              <p>
-                Trong phiên bản trực tuyến này, hệ thống sẽ chọn ngẫu nhiên một câu thơ từ Truyện
-                Kiều và cung cấp lời giải đoán tương ứng.
-              </p>
-
-              <p className="italic">
-                Lưu ý: Bói Kiều chỉ mang tính chất tham khảo và giải trí, không nên xem đây là cơ sở
-                duy nhất để đưa ra các quyết định quan trọng trong cuộc sống.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+    <div className="shell page-content about-page">
+      <header className="page-heading">
+        <div className="eyebrow">VĂN CHƯƠNG GẦN HƠN MỖI NGÀY</div>
+        <h1>
+          Một di sản.
+          <br />
+          <em>Vạn cảm hứng.</em>
+        </h1>
+        <p>Kiều là một không gian nhỏ để gặp lại tác phẩm của Nguyễn Du, theo nhịp sống hôm nay.</p>
+      </header>
+      <div className="about-grid">
+        <article className="article-copy">
+          <h2>Từ trang sách đến cuộc sống</h2>
+          <p>
+            Truyện Kiều, còn mang tên Đoạn trường tân thanh, kể về cuộc đời nhiều biến cố của Thúy
+            Kiều. Những vần lục bát về tình yêu, chữ hiếu, tài năng và thân phận đã trở thành một
+            phần quen thuộc trong tiếng nói, tâm thức người Việt.
+          </p>
+          <p>
+            Dự án này mời bạn đọc chậm, tìm lại câu thơ mình nhớ, và giữ những đoạn chạm đến cảm xúc
+            của riêng mình.
+          </p>
+          <h2>Bói Kiều & Lẩy Kiều</h2>
+          <p>
+            Bói Kiều là một cách tìm đến văn chương để gửi gắm tâm sự. Ở đây, bạn nhận một đoạn thơ
+            ngẫu nhiên và tự chiêm nghiệm; đó là trải nghiệm văn hóa, không phải dự đoán tương lai.
+          </p>
+          <p>
+            Lẩy Kiều vận dụng câu chữ trong tác phẩm để diễn đạt tâm tình mới. Góc thử nghiệm ghép
+            câu trong ứng dụng đối chiếu vần chữ, giúp bạn khám phá những kết hợp để tiếp tục đọc và
+            chỉnh lại theo cảm nhận.
+          </p>
+          <h2>Về bản văn</h2>
+          <p>
+            Ứng dụng giữ nguyên dữ liệu của dự án gốc, chỉ làm gọn khoảng trắng và dấu câu khi hiển
+            thị. Bản dữ liệu có 3.257 mục, trong đó có dòng ghép và khác biệt về đánh số. Số dòng
+            trong ứng dụng là mã tra cứu của bản này, không phải hệ thống số câu của mọi ấn bản.
+          </p>
+          <p>
+            Khi dùng cho học tập hoặc trích dẫn học thuật, hãy đối chiếu một ấn bản đã được khảo
+            đính. Bình giải AI, nếu được bật, là nội dung tham khảo và có thể chưa chính xác.
+          </p>
+          <Link href="/full" className="button primary">
+            Mở trang Kiều
+            <ArrowRight size={17} />
+          </Link>
+        </article>
+        <aside className="about-values">
+          <div>
+            <BookOpen size={24} />
+            <h3>Đọc theo cách của bạn</h3>
+            <p>Tìm không dấu, đổi cỡ chữ, bật chế độ tối và trở lại vị trí đã lưu.</p>
+          </div>
+          <div>
+            <Heart size={24} />
+            <h3>Giữ những điều yêu thích</h3>
+            <p>Lưu câu thơ và tải bộ sưu tập thành văn bản để mang theo bên mình.</p>
+          </div>
+          <div>
+            <ShieldCheck size={24} />
+            <h3>Một khoảng riêng tư</h3>
+            <p>
+              Dấu trang và tiến độ ở trong trình duyệt. Chỉ khi bạn chọn bình giải AI, đoạn thơ và
+              tâm sự đi kèm mới được gửi đến Google Gemini.
+            </p>
+          </div>
+        </aside>
       </div>
     </div>
   )

@@ -1,98 +1,88 @@
-import { truyenKieuVerses } from '../data/truyen-kieu'
+import { verses, words } from '../../lib/kieu'
 
-interface Verse {
+export interface Verse {
   number: number
   content: string
   rhyme: string
   wordCount: number
-  isEven: boolean // true for câu bát (even-numbered verses)
+  isEven: boolean
 }
-
-let verses: Verse[] = []
-
-// Clean up verse content by removing verse numbers
-function cleanVerseContent(content: string): string {
-  return content.trim()
+// Keep vowel quality (a/ă/â, o/ô/ơ, u/ư) while removing tone marks.
+export function rhymeKey(word: string): string {
+  return word
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300\u0301\u0303\u0309\u0323]/g, '')
+    .normalize('NFC')
+    .replace(/^[^aeiouyăâêôơư]+/u, '')
 }
-
-// Load and process Truyện Kiều data
-export function loadVerses() {
-  if (verses.length > 0) return verses
-
-  verses = truyenKieuVerses.map(verse => {
-    const cleanedContent = cleanVerseContent(verse.text)
+export function loadVerses(): Verse[] {
+  return verses.map(verse => {
+    const tokens = words(verse.text)
     return {
       number: verse.id,
-      content: cleanedContent,
-      rhyme: extractRhyme(cleanedContent),
-      wordCount: countWords(cleanedContent),
-      isEven: verse.id % 2 === 0,
+      content: verse.text,
+      rhyme: rhymeKey(tokens.at(-1) || ''),
+      wordCount: tokens.length,
+      isEven: tokens.length === 8,
     }
   })
-
-  return verses
 }
-
-// Count words in a verse
-function countWords(verse: string): number {
-  return verse.split(' ').filter(word => word.trim().length > 0).length
+const processed = loadVerses()
+const rhymeIndex = new Map<string, Verse[]>()
+for (const verse of processed) {
+  const tokens = words(verse.content)
+  const key = `${verse.wordCount}:${rhymeKey(tokens[verse.wordCount === 8 ? 5 : verse.wordCount - 1] || '')}`
+  rhymeIndex.set(key, [...(rhymeIndex.get(key) || []), verse])
 }
-
-// Extract the rhyme from a verse (last word)
-function extractRhyme(verse: string): string {
-  const words = verse.split(' ')
-  return words[words.length - 1]
-}
-
-// Find verses that rhyme with a given verse and have the specified word count
 export function findRhymingVerses(
   targetVerse: string,
   targetWordCount: number,
-  mustBeEven: boolean = false
+  mustBeEven = false
 ): Verse[] {
-  const verses = loadVerses()
-  const targetRhyme = extractRhyme(targetVerse)
-
-  return verses.filter(
+  const target = words(targetVerse)
+  const rhyme = rhymeKey(target.at(-1) || '')
+  return (rhymeIndex.get(`${targetWordCount}:${rhyme}`) || []).filter(
     verse =>
-      verse.rhyme === targetRhyme &&
       verse.content !== targetVerse &&
       verse.wordCount === targetWordCount &&
       (!mustBeEven || verse.isEven)
   )
 }
-
-// Generate Lẩy Kiều by combining verses
-export function generateLayKieu(verse6: string, verse8: string): string {
+export function generateLayKieu(verse6: string, verse8: string) {
   return `${verse6}\n${verse8}`
 }
-
-// Get a random verse with the specified word count
-export function getRandomVerse(wordCount: number, mustBeEven: boolean = false): Verse {
-  const verses = loadVerses()
-  const filteredVerses = verses.filter(
+export function getRandomVerse(wordCount: number, mustBeEven = false): Verse {
+  const options = processed.filter(
     verse => verse.wordCount === wordCount && (!mustBeEven || verse.isEven)
   )
-  if (filteredVerses.length === 0) {
-    throw new Error(
-      `No verses found with ${wordCount} words${mustBeEven ? ' and even number' : ''}`
-    )
-  }
-  const randomIndex = Math.floor(Math.random() * filteredVerses.length)
-  return filteredVerses[randomIndex]
+  if (!options.length) throw new Error('No matching verse')
+  return options[Math.floor(Math.random() * options.length)]
 }
-
-// Get a random verse that rhymes with a given verse and has the specified word count
 export function getRandomRhymingVerse(
   targetVerse: string,
   targetWordCount: number,
-  mustBeEven: boolean = false
+  mustBeEven = false
 ): Verse {
-  const rhymingVerses = findRhymingVerses(targetVerse, targetWordCount, mustBeEven)
-  if (rhymingVerses.length === 0) {
-    return getRandomVerse(targetWordCount, mustBeEven)
-  }
-
-  const randomIndex = Math.floor(Math.random() * rhymingVerses.length)
-  return rhymingVerses[randomIndex]
+  const options = findRhymingVerses(targetVerse, targetWordCount, mustBeEven)
+  if (!options.length) throw new Error('No matching rhyme')
+  return options[Math.floor(Math.random() * options.length)]
+}
+const candidates = processed.filter(
+  verse => verse.wordCount === 6 && findRhymingVerses(verse.content, 8, true).length > 0
+)
+export function generatePairs(count: number) {
+  if (!Number.isInteger(count) || count < 1 || count > 16)
+    throw new RangeError('Invalid pair count')
+  return Array.from({ length: count }, () => {
+    const verse6 = candidates[Math.floor(Math.random() * candidates.length)]
+    const verse8 = getRandomRhymingVerse(verse6.content, 8, true)
+    return {
+      verse6: verse6.content,
+      verse8: verse8.content,
+      id6: verse6.number,
+      id8: verse8.number,
+      result: generateLayKieu(verse6.content, verse8.content),
+    }
+  })
 }
