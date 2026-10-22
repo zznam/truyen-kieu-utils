@@ -61,7 +61,18 @@ for (const width of [320, 390, 768, 1280]) {
   })
 }
 
-test('Vietnamese reading fonts load locally and remain available offline', async ({ page }) => {
+base('Vietnamese reading fonts load locally and remain available offline', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  page.on('console', message => {
+    // Production route prefetches may fail when this test deliberately disconnects.
+    // Keep all other console failures and every JavaScript exception actionable.
+    if (
+      message.type() === 'error' &&
+      message.text() !== 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED'
+    )
+      errors.push(message.text())
+  })
   const fontUrls: string[] = []
   page.on('response', response => {
     if (response.request().resourceType() === 'font') fontUrls.push(response.url())
@@ -96,6 +107,7 @@ test('Vietnamese reading fonts load locally and remain available offline', async
   await page.getByLabel('Cỡ chữ').selectOption('30')
   await expect(page.locator('.verse-text').first()).toHaveCSS('font-size', '30px')
   await page.context().setOffline(false)
+  expect(errors).toEqual([])
 })
 
 test('long unbroken search recovers and Vietnamese search works without accents', async ({
