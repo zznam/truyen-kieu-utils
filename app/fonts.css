@@ -1,0 +1,29 @@
+/* Local subsets retain combining marks for both NFC and NFD Vietnamese text. */
+@font-face {
+  font-family: 'Noto Serif Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/NotoSerif-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Serif Variable';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/NotoSerif-Italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/NotoSans-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans Variable';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/NotoSans-Italic.woff2') format('woff2');
+}

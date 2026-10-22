@@ -15,8 +15,6 @@
     "test:ui": "playwright test --config playwright.ui.config.ts"
   },
   "dependencies": {
-    "@fontsource-variable/noto-sans": "^5.3.0",
-    "@fontsource-variable/noto-serif": "^5.3.0",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
