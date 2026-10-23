@@ -48,7 +48,7 @@ export default function PlayPage() {
           </span>
         </div>
       </section>
-      <GameMissions />
+      <GameMissions today={today} />
       <section className="journey-links play-section" aria-label="Tiếp tục hành trình">
         <Link className="game-panel text-link" href="/play/review">
           <span>

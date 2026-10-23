@@ -5,11 +5,9 @@ import { ArrowRight, Check, Gift } from 'lucide-react'
 import { useState } from 'react'
 import { useGameProgress } from './game-provider'
 import { dailyMissions } from '@/lib/game-journey'
-import { useLocalDay } from '@/hooks/use-local-day'
 
-export function GameMissions() {
+export function GameMissions({ today }: { today: string }) {
   const { progress, ready, claimBonus } = useGameProgress()
-  const today = useLocalDay()
   const [message, setMessage] = useState({ day: '', text: '' })
   const activity = progress.activity.find(day => day.date === today)
   const missions = dailyMissions(activity)
@@ -68,7 +66,7 @@ export function GameMissions() {
                   day: today,
                   text: earned
                     ? 'Đã nhận 20 XP. Hẹn bạn ngày mai!'
-                    : 'Phần thưởng hôm nay đã được ghi nhận.',
+                    : 'Phần thưởng chưa sẵn sàng hoặc đã được nhận. Kiểm tra nhiệm vụ hôm nay.',
                 })
               }}
             >

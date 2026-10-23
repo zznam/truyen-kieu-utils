@@ -215,6 +215,7 @@ function parseActivity(value: unknown): DayActivity[] {
 }
 function parseHistory(value: unknown): HistoryItem[] {
   if (!Array.isArray(value)) return []
+  const seen = new Set<string>()
   return value.slice(-20).flatMap(item => {
     if (
       !item ||
@@ -223,9 +224,12 @@ function parseHistory(value: unknown): HistoryItem[] {
       typeof item.mode !== 'string' ||
       !isPlayMode(item.mode) ||
       typeof item.id !== 'string' ||
+      !item.id ||
+      seen.has(item.id) ||
       item.id.length > 100
     )
       return []
+    seen.add(item.id)
     const correct = Math.min(count(item.correct), ROUND_COUNT)
     return [
       {
