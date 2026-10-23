@@ -15,6 +15,21 @@ test('all primary routes render successfully', async ({ request }) => {
     '/play/daily',
     '/play/review',
     '/play/journey',
+    '/play/adventure',
+    '/play/arcade',
+    '/play/mastery',
+    ...[
+      'word-order',
+      'double-blank',
+      'previous-verse',
+      'true-verse',
+      'syllable-count',
+      'changed-word',
+      'initials',
+      'typed-word',
+      'pair-match',
+      'recall',
+    ].map(mode => `/play/arcade/${mode}`),
   ]) {
     const response = await request.get(route)
     expect(response.status(), route).toBe(200)
@@ -75,4 +90,5 @@ test('missing pages return 404 with a recovery link', async ({ request }) => {
 
 test('unknown game mode returns 404', async ({ request }) => {
   expect((await request.get('/play/unknown-game')).status()).toBe(404)
+  expect((await request.get('/play/arcade/unknown-game')).status()).toBe(404)
 })

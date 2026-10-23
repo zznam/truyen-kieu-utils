@@ -20,6 +20,22 @@ export default function PlayPage() {
         <h1>Chơi cùng Kiều.</h1>
         <p>Nhặt lại một chữ, nối tiếp một vần. Để câu thơ ở lại lâu hơn.</p>
       </header>
+      <section className="journey-links play-section adventure-entry" aria-label="Khám phá mới">
+        <Link className="game-panel text-link" href="/play/adventure">
+          <span>
+            <strong>Vườn tri âm</strong>
+            <span className="play-caption">Nhiệm vụ, hành trình đọc, bộ sưu tập và quà thưởng</span>
+          </span>
+          <ArrowRight size={20} />
+        </Link>
+        <Link className="game-panel text-link" href="/play/arcade">
+          <span>
+            <strong>Mười cách thử tài mới</strong>
+            <span className="play-caption">Luyện trí nhớ, ghép chữ và khám phá lục bát</span>
+          </span>
+          <ArrowRight size={20} />
+        </Link>
+      </section>
       <section className="play-daily" aria-labelledby="daily-title">
         <div>
           <div className="eyebrow">

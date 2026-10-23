@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { verses } from '@/lib/kieu'
+import { useGamification } from './gamification-provider'
 
 const STORAGE_KEY = 'kieu-library-v1'
 type Library = { saved: number[]; progress: number; fontSize: number }
@@ -37,6 +38,7 @@ const LibraryContext = createContext<{
 })
 
 export function LibraryProvider({ children }: { children: ReactNode }) {
+  const { track } = useGamification()
   const [library, setLibrary] = useState<Library>(defaults)
   const [ready, setReady] = useState(false)
   const [storageAvailable, setStorageAvailable] = useState(true)
@@ -68,6 +70,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   }, [library, ready])
   const toggleSaved = (id: number) => {
     if (!ready || !validIds.has(id)) return
+    if (!library.saved.includes(id)) track({ type: 'save', id: `save:${id}`, verseId: id })
     setLibrary(current => ({
       ...current,
       saved: current.saved.includes(id)

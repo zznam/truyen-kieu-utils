@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Interpretation } from '@/components/interpretation'
+import { ReadingQuest } from '@/components/reading-quest'
 
 function Highlight({ text, query }: { text: string; query: string }) {
   const displayText = text.normalize('NFC')
@@ -255,6 +256,9 @@ function Reader() {
               </div>
             )}
           </div>
+          {!deferredQuery.trim() && visible.length > 0 && (
+            <ReadingQuest key={visible[0].id} verseIds={visible.map(verse => verse.id)} />
+          )}
           <nav className="pagination" aria-label="Trang thơ">
             <button
               className="button secondary"
