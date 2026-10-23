@@ -1,126 +1,105 @@
 'use client'
-
 import { useState } from 'react'
-import Link from 'next/link'
-import { ArrowLeft, RefreshCw } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import { getRandomVerse } from '../actions/divination-actions'
-
-interface VerseResult {
-  id: number
-  verse: string
-  interpretation: string
-}
-
+import { ArrowRight, RotateCcw, Sparkles, Flower2 } from 'lucide-react'
+import { couplets, type Verse } from '@/lib/kieu'
+import { PassageCard } from '@/components/passage-card'
+import { Interpretation } from '@/components/interpretation'
 export default function Divination() {
   const [question, setQuestion] = useState('')
-  const [selectedVerse, setSelectedVerse] = useState<VerseResult | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleDivination = async () => {
-    setIsLoading(true)
-    try {
-      const result = await getRandomVerse(question)
-      setSelectedVerse(result)
-    } catch (error) {
-      console.error('Error in divination:', error)
-    } finally {
-      setIsLoading(false)
-    }
+  const [selected, setSelected] = useState<Verse[] | null>(null)
+  const [history, setHistory] = useState<Verse[][]>([])
+  function draw() {
+    const options = couplets.filter(pair => pair[0].id !== selected?.[0].id)
+    const pair = options[Math.floor(Math.random() * options.length)]
+    if (selected) setHistory(current => [selected, ...current].slice(0, 5))
+    setSelected(pair)
   }
-
-  const handleReset = () => {
-    setSelectedVerse(null)
-    setQuestion('')
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 py-12">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto">
-          <Card className="bg-white/90 backdrop-blur border-amber-200">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl text-amber-800">Xem Bói Kiều</CardTitle>
-              <CardDescription>
-                Hãy đặt câu hỏi trong lòng và nhấn nút để nhận được câu Kiều của bạn
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {!selectedVerse ? (
-                <div className="space-y-4">
-                  <Textarea
-                    placeholder="Nhập câu hỏi của bạn (không bắt buộc)..."
-                    value={question}
-                    onChange={e => setQuestion(e.target.value)}
-                    className="border-amber-200 focus:border-amber-400 h-32"
-                  />
-                  <div className="text-center">
-                    <Button
-                      onClick={handleDivination}
-                      disabled={isLoading}
-                      className="bg-amber-600 hover:bg-amber-700 text-white w-full md:w-auto"
-                    >
-                      {isLoading ? (
-                        <>
-                          <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                          Đang chọn câu Kiều...
-                        </>
-                      ) : (
-                        'Xem bói Kiều'
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {question && (
-                    <div>
-                      <h3 className="text-sm font-medium text-amber-700 mb-1">Câu hỏi của bạn:</h3>
-                      <p className="text-amber-900 italic">{question}</p>
-                    </div>
-                  )}
-
-                  <div className="border-t border-b border-amber-200 py-6 my-6">
-                    <h3 className="text-sm font-medium text-amber-700 mb-2">Câu Kiều của bạn:</h3>
-                    <p className="text-xl text-center font-medium text-amber-900 my-4">
-                      {selectedVerse.verse}
-                    </p>
-                    <p className="text-xs text-center text-amber-600">Câu {selectedVerse.id}</p>
-                  </div>
-
-                  <div>
-                    <h3 className="text-sm font-medium text-amber-700 mb-2">Ý nghĩa:</h3>
-                    <p className="text-amber-900 whitespace-pre-line">
-                      {selectedVerse.interpretation}
-                    </p>
-                  </div>
-
-                  <div className="text-center pt-4">
-                    <Button
-                      onClick={handleReset}
-                      className="bg-amber-600 hover:bg-amber-700 text-white"
-                    >
-                      Xem bói lại
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-center text-sm text-amber-700 justify-center">
-              Lưu ý: Bói Kiều chỉ mang tính chất tham khảo và giải trí
-            </CardFooter>
-          </Card>
+    <div className="shell page-content">
+      <header className="page-heading centered">
+        <div className="eyebrow">MỘT NÉT VĂN HÓA, MỘT CHÚT DUYÊN</div>
+        <h1>Bạn có một tâm sự?</h1>
+        <p>Gửi vào câu chữ. Để một vần Kiều cùng bạn nghĩ suy.</p>
+      </header>
+      <div className="ritual-layout">
+        <div className="ritual-panel">
+          <span className="feature-icon clay">
+            <Flower2 size={28} />
+          </span>
+          <h2>Gieo một duyên thơ</h2>
+          <p>
+            Hít thở thật chậm, nghĩ về điều đang ở trong lòng. Một đoạn Kiều ngẫu nhiên sẽ là điểm
+            bắt đầu cho cảm nhận của riêng bạn.
+          </p>
+          <label htmlFor="question">
+            Điều bạn đang nghĩ đến <span className="muted">(không bắt buộc)</span>
+          </label>
+          <textarea
+            id="question"
+            maxLength={500}
+            placeholder="Một điều mong mỏi, một nỗi băn khoăn…"
+            value={question}
+            onChange={event => setQuestion(event.target.value)}
+            rows={4}
+          />
+          <div className="input-caption">
+            <span>Chỉ ở trong trình duyệt, trừ khi bạn chọn bình giải AI.</span>
+            <span>{question.length}/500</span>
+          </div>
+          <button className="button primary wide" onClick={draw}>
+            {selected ? <RotateCcw size={17} /> : <Sparkles size={17} />}
+            {selected ? 'Gieo một duyên mới' : 'Đón nhận câu Kiều'}
+            <ArrowRight size={17} />
+          </button>
+          <p className="ritual-note">
+            Một trải nghiệm văn hóa để chiêm nghiệm và giải trí. Câu thơ không dự đoán tương lai.
+          </p>
+        </div>
+        <div className="ritual-result" aria-live="polite">
+          {selected ? (
+            <>
+              <PassageCard passage={selected} label="CÂU KIỀU GỬI BẠN" />
+              <div className="reflection">
+                <span className="eyebrow">MỘT GỢI Ý ĐỂ NGẪM</span>
+                <h3>Điều gì trong câu thơ chạm đến bạn?</h3>
+                <p>
+                  Hãy thử đọc lại thật chậm. Một hình ảnh, một từ, hay một cảm xúc có thể gợi cho
+                  bạn một góc nhìn mới.
+                </p>
+                <Interpretation
+                  key={`${selected[0].id}-${question}`}
+                  text={selected.map(verse => verse.text).join('\n')}
+                  question={question}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="waiting-poem">
+              <span>“</span>
+              <blockquote>
+                Thiện căn ở tại lòng ta,
+                <br />
+                Chữ tâm kia mới bằng ba chữ tài.
+              </blockquote>
+              <p>NGUYỄN DU · TRUYỆN KIỀU</p>
+              <div className="waiting-decoration">✳</div>
+            </div>
+          )}
         </div>
       </div>
+      {history.length > 0 && (
+        <section className="history-section">
+          <div className="section-heading">
+            <h2>Những duyên thơ vừa gặp</h2>
+            <span className="muted small">Trong phiên này · tối đa 5 đoạn</span>
+          </div>
+          <div className="collection-grid">
+            {history.map((pair, index) => (
+              <PassageCard key={`${pair[0].id}-${index}`} passage={pair} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
