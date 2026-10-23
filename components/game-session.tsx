@@ -139,7 +139,7 @@ export function GameSession({ mode }: { mode: PlayMode | 'review' }) {
             <ul>
               <li>
                 {reviewing
-                  ? 'Lượt ôn không cộng XP, chuỗi ngày hay nhiệm vụ; bạn có thể luyện lại thoải mái.'
+                  ? 'Lượt ôn không cộng XP luyện tập hay chuỗi ngày ở đây. Câu nhớ lại được ghi nhận riêng trong Vườn tri âm.'
                   : 'Mỗi câu đúng được 10 điểm, hoặc 5 điểm nếu dùng gợi ý.'}
               </li>
               <li>Sau mỗi câu, đọc lại lời thơ và mở bản văn để tìm hiểu thêm.</li>
@@ -182,6 +182,9 @@ export function GameSession({ mode }: { mode: PlayMode | 'review' }) {
               Đúng {answers.filter(answer => answer.correct).length}/{total} câu · +{earned} XP ·
               Tổng {progress.xp} XP
             </p>
+            <Link className="text-link" href="/play/adventure">
+              Ghé Vườn tri âm để xem nhiệm vụ và phần thưởng <ArrowRight size={16} />
+            </Link>
             {reviewing && (
               <p role="status" className="notice">
                 Còn {progress.review.length} câu trong sổ ôn. Câu đúng có gợi ý vẫn được giữ để bạn

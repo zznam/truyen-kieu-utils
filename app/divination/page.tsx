@@ -4,7 +4,11 @@ import { ArrowRight, RotateCcw, Sparkles, Flower2 } from 'lucide-react'
 import { couplets, type Verse } from '@/lib/kieu'
 import { PassageCard } from '@/components/passage-card'
 import { Interpretation } from '@/components/interpretation'
+import { useGamification } from '@/components/gamification-provider'
 export default function Divination() {
+  const { track, ready } = useGamification()
+  const [reflected, setReflected] = useState(false)
+  const [reflectionMessage, setReflectionMessage] = useState('')
   const [question, setQuestion] = useState('')
   const [selected, setSelected] = useState<Verse[] | null>(null)
   const [history, setHistory] = useState<Verse[][]>([])
@@ -13,6 +17,8 @@ export default function Divination() {
     const pair = options[Math.floor(Math.random() * options.length)]
     if (selected) setHistory(current => [selected, ...current].slice(0, 5))
     setSelected(pair)
+    setReflected(false)
+    setReflectionMessage('')
   }
   return (
     <div className="shell page-content">
@@ -66,6 +72,22 @@ export default function Divination() {
                   Hãy thử đọc lại thật chậm. Một hình ảnh, một từ, hay một cảm xúc có thể gợi cho
                   bạn một góc nhìn mới.
                 </p>
+                <button
+                  className="button secondary"
+                  disabled={!ready || reflected}
+                  onClick={() => {
+                    const credited = track({ type: 'reflect', id: crypto.randomUUID() })
+                    setReflected(true)
+                    setReflectionMessage(
+                      credited
+                        ? 'Đã ghi nhận trong Vườn tri âm.'
+                        : 'Bạn đã nhận đủ 3 phần thưởng chiêm nghiệm hôm nay. Hãy tiếp tục đọc theo nhịp riêng.'
+                    )
+                  }}
+                >
+                  {reflected ? 'Đã ghi dấu chiêm nghiệm' : 'Đánh dấu đã chiêm nghiệm'}
+                </button>
+                {reflectionMessage && <p role="status">{reflectionMessage}</p>}
                 <Interpretation
                   key={`${selected[0].id}-${question}`}
                   text={selected.map(verse => verse.text).join('\n')}

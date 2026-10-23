@@ -1808,3 +1808,49 @@ textarea {
     color: var(--clay);
   }
 }
+/* Optional, self-reported reading quests; keeps the poem itself uncluttered. */
+.reading-quest {
+  margin-top: 32px;
+  padding: 24px;
+  border: 1px solid var(--rule);
+  background: var(--soft);
+  border-radius: 10px;
+  display: grid;
+  gap: 22px;
+}
+.reading-quest h2,
+.reading-quest h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+.reading-quest p {
+  color: var(--muted-ink);
+  font-size: 13px;
+  margin: 8px 0 14px;
+}
+.reading-quest p:empty {
+  display: none;
+}
+.reading-quest-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.reading-quest-controls select {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 9px;
+}
+.reading-quest .button {
+  white-space: normal;
+}
+.focus-clock {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}

@@ -540,3 +540,38 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+.adventure-entry {
+  margin-top: 0;
+  margin-bottom: 28px;
+}
+.mastery-option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.mastery-option input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.mastery-answer {
+  display: block;
+  width: 100%;
+  margin: 10px 0 20px;
+  padding: 14px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.mastery-results {
+  list-style: none;
+  text-align: left;
+  padding: 0;
+}
+.mastery-results li {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}

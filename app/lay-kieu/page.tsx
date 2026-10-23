@@ -6,9 +6,11 @@ import { toast } from 'sonner'
 import { topics, topicPassages } from '@/lib/kieu'
 import { PassageCard } from '@/components/passage-card'
 import { Interpretation } from '@/components/interpretation'
+import { useGamification } from '@/components/gamification-provider'
 
 type Result = { verse6: string; verse8: string; id6: number; id8: number; result: string }
 export default function LayKieu() {
+  const { track } = useGamification()
   const [topic, setTopic] = useState('all')
   const [offset, setOffset] = useState(0)
   const [count, setCount] = useState('2')
@@ -28,6 +30,7 @@ export default function LayKieu() {
       const data = await response.json()
       if (!response.ok || !data.success) throw new Error(data.error || 'Chưa thể ghép câu thơ.')
       setResults(data.data.results)
+      track({ type: 'create', id: crypto.randomUUID() })
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Chưa thể ghép câu thơ.')
     } finally {
@@ -69,6 +72,8 @@ export default function LayKieu() {
             onClick={() => {
               setTopic(item.id)
               setOffset(0)
+              if (item.id !== 'all')
+                track({ type: 'explore', id: `topic:${item.id}`, topic: item.id })
             }}
           >
             {item.label}

@@ -13,6 +13,7 @@ import {
 
 import { updateReview, type Outcome } from '@/lib/game-journey'
 import { localDateKey } from '@/lib/games'
+import { useGamification } from './gamification-provider'
 
 const GameContext = createContext<{
   progress: GameProgress
@@ -30,6 +31,7 @@ const GameContext = createContext<{
   claimBonus: () => 0,
 })
 export function GameProvider({ children }: { children: ReactNode }) {
+  const { track } = useGamification()
   const [progress, setProgress] = useState(emptyProgress)
   const current = useRef(progress)
   const [ready, setReady] = useState(false)
@@ -77,9 +79,45 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
     return next.xp - previous.xp
   }
-  const record = (result: GameResult) => update(previous => applyResult(previous, result))
-  const reviewAnswers = (outcomes: Outcome[]) =>
-    update(previous => ({ ...previous, review: updateReview(previous.review, outcomes) }))
+  const record = (result: GameResult) => {
+    let accepted = false
+    const earned = update(previous => {
+      const next = applyResult(previous, result)
+      accepted = next !== previous
+      return next
+    })
+    if (accepted)
+      track({
+        type: 'session',
+        id: `classic:${result.id}`,
+        mode: result.mode,
+        correct: result.correct,
+        total: 5,
+        hints: result.outcomes?.filter(outcome => outcome.hinted).length ?? 0,
+        verseIds:
+          result.outcomes
+            ?.filter(outcome => outcome.correct && !outcome.hinted)
+            .map(outcome => outcome.verseId) ?? [],
+      })
+    return earned
+  }
+  const reviewAnswers = (outcomes: Outcome[]) => {
+    let recovered: number[] = []
+    update(previous => {
+      recovered = outcomes
+        .filter(
+          outcome =>
+            outcome.correct &&
+            !outcome.hinted &&
+            previous.review.some(
+              item => item.verseId === outcome.verseId && item.mode === outcome.mode
+            )
+        )
+        .map(outcome => outcome.verseId)
+      return { ...previous, review: updateReview(previous.review, outcomes) }
+    })
+    if (recovered.length) track({ type: 'review', id: crypto.randomUUID(), verseIds: recovered })
+  }
   const claimBonus = () => update(previous => claimMissionBonus(previous, localDateKey()))
   return (
     <GameContext.Provider
