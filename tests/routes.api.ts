@@ -1,7 +1,21 @@
 import { test, expect } from '@playwright/test'
 
 test('all primary routes render successfully', async ({ request }) => {
-  for (const route of ['/', '/full', '/saved', '/divination', '/lay-kieu', '/about']) {
+  for (const route of [
+    '/',
+    '/full',
+    '/saved',
+    '/divination',
+    '/lay-kieu',
+    '/about',
+    '/play',
+    '/play/missing',
+    '/play/continuation',
+    '/play/order',
+    '/play/daily',
+    '/play/review',
+    '/play/journey',
+  ]) {
     const response = await request.get(route)
     expect(response.status(), route).toBe(200)
     expect(await response.text()).toContain('lang="vi"')
@@ -57,4 +71,8 @@ test('missing pages return 404 with a recovery link', async ({ request }) => {
   const response = await request.get('/missing-page-for-test')
   expect(response.status()).toBe(404)
   expect(await response.text()).toContain('Về trang khám phá')
+})
+
+test('unknown game mode returns 404', async ({ request }) => {
+  expect((await request.get('/play/unknown-game')).status()).toBe(404)
 })

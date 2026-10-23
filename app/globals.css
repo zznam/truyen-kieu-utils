@@ -1771,3 +1771,40 @@ textarea {
     scroll-behavior: auto !important;
   }
 }
+
+.home-play-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 25px 30px;
+  margin-top: 24px;
+  background: var(--soft);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+@media (min-width: 801px) and (max-width: 1000px) {
+  .desktop-nav {
+    display: none;
+  }
+  .menu-toggle {
+    display: flex;
+  }
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-bottom: 15px;
+  }
+  .mobile-nav a {
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  .mobile-nav a[aria-current='page'] {
+    background: var(--soft);
+    color: var(--clay);
+  }
+}

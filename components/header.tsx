@@ -12,6 +12,7 @@ const links = [
   ['/full', 'Đọc Truyện Kiều'],
   ['/divination', 'Bói Kiều'],
   ['/lay-kieu', 'Lẩy Kiều'],
+  ['/play', 'Chơi cùng Kiều'],
 ]
 export function Header() {
   const pathname = usePathname()
@@ -36,7 +37,7 @@ export function Header() {
       setOpen(false)
       menuToggle.current?.focus()
     }
-    const desktop = window.matchMedia('(min-width: 801px)')
+    const desktop = window.matchMedia('(min-width: 1001px)')
     const dismissOnDesktop = () => {
       if (desktop.matches) setOpen(false)
     }
@@ -65,8 +66,16 @@ export function Header() {
             <Link
               key={href}
               href={href}
-              className={pathname === href ? 'active' : ''}
-              aria-current={pathname === href ? 'page' : undefined}
+              className={
+                pathname === href || (href === '/play' && pathname.startsWith('/play/'))
+                  ? 'active'
+                  : ''
+              }
+              aria-current={
+                pathname === href || (href === '/play' && pathname.startsWith('/play/'))
+                  ? 'page'
+                  : undefined
+              }
             >
               {label}
             </Link>
@@ -111,7 +120,11 @@ export function Header() {
                 setOpen(false)
                 menuToggle.current?.focus()
               }}
-              aria-current={pathname === href ? 'page' : undefined}
+              aria-current={
+                pathname === href || (href === '/play' && pathname.startsWith('/play/'))
+                  ? 'page'
+                  : undefined
+              }
             >
               {label}
             </Link>

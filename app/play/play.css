@@ -1,0 +1,542 @@
+.play-page {
+  max-width: 1100px;
+}
+.play-page .page-heading {
+  text-align: left;
+}
+.play-section {
+  margin-top: 48px;
+}
+.play-daily {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 40px;
+  padding: 38px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--soft);
+}
+.play-daily h2 {
+  margin: 16px 0;
+}
+.play-daily p {
+  max-width: 530px;
+  color: var(--muted-ink);
+}
+.play-daily .button {
+  margin: 24px 0 12px;
+}
+.play-caption {
+  display: block;
+  font-size: 12px;
+  color: var(--muted-ink);
+  line-height: 1.9;
+}
+.play-daily-art {
+  border-left: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  text-align: center;
+  color: var(--green);
+}
+.play-daily-art > span {
+  font: 28px/1.7 var(--serif);
+}
+.play-modes .feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.play-modes .feature-card h3,
+.play-modes .feature-card p {
+  margin: 0;
+  min-height: 0;
+}
+.play-modes .feature-link {
+  margin-top: auto;
+}
+.play-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.play-stats > div {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.play-stats > div + div {
+  border-left: 1px solid var(--rule);
+}
+.play-stats svg,
+.play-badge svg {
+  color: var(--clay);
+}
+.play-stats strong {
+  font: 28px var(--serif);
+}
+.play-stats span,
+.play-level {
+  font-size: 12px;
+  color: var(--muted-ink);
+}
+.play-level {
+  padding: 20px 0;
+}
+.play-page progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--rule);
+  accent-color: var(--green);
+}
+.play-page progress::-webkit-progress-bar {
+  background: var(--rule);
+}
+.play-page progress::-webkit-progress-value {
+  background: var(--green);
+}
+.play-page progress::-moz-progress-bar {
+  background: var(--green);
+}
+.play-badges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 15px;
+}
+.play-badge {
+  padding: 24px 18px;
+  border: 1px dashed var(--rule);
+  border-radius: 8px;
+}
+.play-badge.unlocked {
+  border: 1px solid var(--green);
+  background: var(--soft);
+}
+.play-badge h3 {
+  font-size: 19px;
+  margin: 12px 0;
+}
+.play-badge p {
+  font-size: 12px;
+  color: var(--muted-ink);
+}
+.play-badge > span {
+  display: block;
+  margin-top: 15px;
+  font-size: 11px;
+  color: var(--green);
+}
+.game-page {
+  max-width: 850px;
+}
+.game-page > .text-link {
+  margin-bottom: 24px;
+}
+.game-panel {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 32px;
+  background: var(--surface);
+  min-width: 0;
+}
+.game-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.game-intro p,
+.game-intro li {
+  color: var(--muted-ink);
+}
+.game-intro ul {
+  list-style: disc;
+  padding-left: 20px;
+  display: grid;
+  gap: 12px;
+}
+.game-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted-ink);
+}
+.game-prompt {
+  margin: 32px 0 16px;
+  font-size: clamp(25px, 3.5vw, 34px);
+  line-height: 1.7;
+}
+.game-options {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0;
+}
+.game-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 16px;
+  min-height: 54px;
+  text-align: left;
+  font: 18px/1.8 var(--serif);
+  overflow-wrap: anywhere;
+}
+.game-option > span:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+.game-option-label {
+  font: 12px var(--sans);
+  color: var(--muted-ink);
+  flex-shrink: 0;
+}
+.game-option.selected {
+  border-color: var(--green);
+  background: var(--soft);
+  box-shadow: inset 3px 0 var(--green);
+}
+.game-option.correct {
+  border-color: var(--green);
+  opacity: 1;
+}
+.game-option:disabled {
+  opacity: 0.7;
+}
+.game-option.correct:disabled,
+.game-option.selected:disabled {
+  opacity: 1;
+}
+.game-option:hover:not(:disabled) {
+  background: var(--soft);
+}
+.game-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.game-actions .button,
+.play-daily .button,
+.game-intro .button {
+  white-space: normal;
+  text-align: center;
+  height: auto;
+  min-height: 46px;
+}
+.game-actions svg {
+  flex-shrink: 0;
+}
+.game-order {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 18px;
+  background: var(--soft);
+  border-radius: 6px;
+}
+.game-order > p {
+  color: var(--muted-ink);
+  font: italic 18px var(--serif);
+}
+.game-order button {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  min-height: 44px;
+  text-align: left;
+  font: 17px/1.8 var(--serif);
+  overflow-wrap: anywhere;
+}
+.game-order button span {
+  font: 12px var(--sans);
+  color: var(--muted-ink);
+}
+.game-order button span:last-child {
+  margin-left: auto;
+}
+.game-feedback {
+  margin-top: 24px;
+  border-top: 1px solid var(--rule);
+  padding-top: 24px;
+}
+.game-feedback h3 {
+  color: var(--green);
+}
+.game-feedback blockquote,
+.game-review blockquote {
+  font: 20px/1.9 var(--serif);
+  margin: 20px 0;
+  overflow-wrap: anywhere;
+}
+.game-feedback .button {
+  display: flex;
+  margin-top: 24px;
+}
+.game-summary {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.game-summary > svg {
+  color: var(--clay);
+}
+.game-score {
+  font: 64px var(--serif);
+  color: var(--green);
+}
+.game-score span {
+  font: 14px var(--sans);
+  margin-left: 8px;
+  color: var(--muted-ink);
+}
+.game-review {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+.game-edition {
+  margin-top: 24px;
+}
+@media (max-width: 800px) {
+  .play-daily {
+    gap: 24px;
+    padding: 25px;
+  }
+  .play-daily-art > span {
+    font-size: 23px;
+  }
+  .play-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .play-daily {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px;
+  }
+  .play-daily-art {
+    display: none;
+  }
+  .play-modes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .play-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .play-stats > div {
+    display: grid;
+    grid-template-columns: 25px 1fr;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 18px;
+  }
+  .play-stats > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .play-stats span {
+    grid-column: 2;
+  }
+  .play-badges {
+    gap: 10px;
+  }
+  .play-badge {
+    padding: 18px 12px;
+  }
+  .game-panel {
+    padding: 20px 16px;
+  }
+  .game-option {
+    padding: 12px;
+    gap: 10px;
+    font-size: 17px;
+  }
+  .game-page h1 {
+    font-size: 36px;
+  }
+  .game-feedback blockquote,
+  .game-review blockquote {
+    font-size: 18px;
+  }
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.mission-card {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 22px;
+  background: var(--surface);
+}
+.mission-card.complete {
+  border-color: var(--green);
+  background: var(--soft);
+}
+.mission-card h3 {
+  margin: 16px 0 8px;
+  font-size: 22px;
+}
+.mission-card .text-link {
+  margin-top: 20px;
+}
+.mission-card .game-meta > span:last-child {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.mission-reward,
+.mission-reward > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.mission-reward {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+  padding: 20px 0;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.mission-reward svg,
+.journey-review > svg {
+  color: var(--clay);
+  flex-shrink: 0;
+}
+.journey-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.journey-links > a {
+  justify-content: space-between;
+}
+.journey-links strong {
+  display: block;
+  font: 25px var(--serif);
+  margin-bottom: 8px;
+}
+.journey-links svg {
+  flex-shrink: 0;
+}
+.journey-heading {
+  margin-top: 32px;
+}
+.activity-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  margin: 24px 0;
+}
+.activity-week li {
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 4px;
+  color: var(--muted-ink);
+  font-size: 11px;
+}
+.activity-week li.active {
+  background: var(--soft);
+  color: var(--green);
+}
+.activity-week li[aria-current] {
+  border-color: var(--green);
+}
+.activity-week strong {
+  font-size: 15px;
+}
+.journey-review {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.journey-review > div {
+  flex: 1;
+}
+.journey-review h2 {
+  margin-bottom: 12px;
+}
+.journey-review .button {
+  white-space: normal;
+}
+.journey-history {
+  margin-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+.journey-history li {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.journey-history li > div {
+  flex: 1;
+}
+.history-score {
+  color: var(--green);
+  font: 28px var(--serif);
+}
+.history-score span {
+  font: 11px var(--sans);
+  color: var(--muted-ink);
+  margin-left: 4px;
+}
+.history-empty {
+  margin-top: 24px;
+}
+.history-empty .text-link {
+  margin-top: 16px;
+}
+@media (max-width: 700px) {
+  .mission-grid,
+  .journey-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .journey-review {
+    flex-wrap: wrap;
+  }
+  .journey-review > div {
+    flex-basis: 70%;
+  }
+  .journey-history li {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .journey-history li > div {
+    flex-basis: 65%;
+  }
+}
+@media (max-width: 450px) {
+  .activity-week {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

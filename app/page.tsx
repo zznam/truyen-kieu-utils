@@ -140,6 +140,16 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      <Link href="/play" className="home-play-link">
+        <span>
+          <strong>Chơi cùng Kiều</strong>
+          <br />
+          Điền chữ, nối câu, xếp thơ — mỗi ngày một thử thách mới.
+        </span>
+        <span className="text-link">
+          Thử tài nhớ Kiều <ArrowRight size={18} />
+        </span>
+      </Link>
       <section className="daily-section">
         <div className="daily-intro">
           <div className="eyebrow">
