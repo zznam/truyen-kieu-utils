@@ -108,7 +108,7 @@ test('old progress survives migration and new fields reject corrupt persisted da
         claimed: 'yes',
       },
     ],
-    history: [null, { ...result, mode: 'bogus' }, { ...result, score: 999 }],
+    history: [null, { ...result, mode: 'bogus' }, { ...result, score: 999 }, result],
   })
   assert.equal(corrupt.review.length, 1)
   assert.equal(corrupt.activity[0].correct, 5)
