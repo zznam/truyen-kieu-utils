@@ -36,6 +36,45 @@ export default function PlayPage() {
           <ArrowRight size={20} />
         </Link>
       </section>
+      <section className="play-section learning-entry" aria-labelledby="learning-title">
+        <div className="section-heading">
+          <div>
+            <div className="eyebrow">THÊM BA LỐI ĐỒNG HÀNH</div>
+            <h2 id="learning-title">Một lối học của riêng bạn.</h2>
+          </div>
+        </div>
+        <div className="learning-grid">
+          {[
+            {
+              href: '/play/studio',
+              title: 'Tủ thẻ của bạn',
+              description: 'Gom những câu muốn nhớ, tự thử trí nhớ và hẹn ngày ôn lại.',
+              action: 'Mở tủ thẻ',
+            },
+            {
+              href: '/play/expeditions',
+              title: 'Chuyến du hành',
+              description:
+                'Chọn một lộ trình, đặt đích đến và đi qua từng chặng bằng hoạt động thật.',
+              action: 'Chọn chuyến đi',
+            },
+            {
+              href: '/play/arena',
+              title: 'Đấu trường câu chữ',
+              description: 'Tám phép thử mới. Tự chọn vùng thơ, cách chơi và độ dài của mỗi lượt.',
+              action: 'Vào đấu trường',
+            },
+          ].map(item => (
+            <Link className="game-panel learning-card" href={item.href} key={item.href}>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <span className="text-link">
+                {item.action} <ArrowRight size={17} />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
       <section className="play-daily" aria-labelledby="daily-title">
         <div>
           <div className="eyebrow">
