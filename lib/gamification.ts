@@ -17,6 +17,7 @@ export const SESSION_MODES = [
   'continuation',
   'order',
   'daily',
+  'arena',
   ...[
     'word-order',
     'double-blank',

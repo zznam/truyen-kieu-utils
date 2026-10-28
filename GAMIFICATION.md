@@ -2,6 +2,8 @@
 
 The design uses learning, discovery, personal goals and earned cosmetics. These **60 functional additions** include ten new games plus practice, progression and profile tools. Individual badge thresholds and cosmetic variants are not counted separately. Existing classic games and saved scores remain intact.
 
+A further [54-feature expansion](GAMIFICATION-EXPANSION.md) adds a personal flashcard studio, expeditions and a challenge arena. Those additions are counted separately from the original inventory below.
+
 ## New games — `/play/arcade`
 
 1. **Word assembly:** reconstruct a six-syllable line from word buttons.

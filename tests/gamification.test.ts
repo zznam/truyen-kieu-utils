@@ -161,6 +161,26 @@ test('sessions accept zero correct and track scores, all-time statistics and onl
   assert.equal(perfect.history.at(-1)?.xp, 40)
 })
 
+test('arena completions use normal session rewards, dedupe IDs and survive adventure backup', () => {
+  const event: AdventureEvent = {
+    type: 'session',
+    id: 'arena-round',
+    mode: 'arena',
+    correct: 2,
+    total: 3,
+    hints: 1,
+    verseIds: ids.slice(0, 1),
+  }
+  const state = applyAdventureEvent(emptyAdventure(), event, date)
+  assert.equal(state.xp, 13)
+  assert.equal(state.stats.sessions, 1)
+  assert.equal(state.best.arena, 67)
+  assert.equal(state.history.at(-1)?.mode, 'arena')
+  assert.deepEqual(Object.keys(state.mastery), [String(ids[0])])
+  assert.equal(applyAdventureEvent(state, event, date), state)
+  assert.deepEqual(importAdventure(exportAdventure(state)), state)
+})
+
 test('mastery is spaced across days and a same-day review cannot farm rewards', () => {
   let state = applyAdventureEvent(emptyAdventure(), session(), date)
   assert.equal(state.mastery[ids[0]].count, 1)

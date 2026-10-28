@@ -2,6 +2,9 @@
 
 A Vietnamese reading and discovery app for Nguyễn Du’s Truyện Kiều, built with Next.js, React and TypeScript.
 
+For code navigation, conventions and checks, read [CONTRIBUTING.md](CONTRIBUTING.md).
+Coding agents can start with the repository-wide [AGENTS.md](AGENTS.md).
+
 ## Run locally
 
 Requires Node.js 22 and pnpm 10. The package manager is pinned to 10.28.2 for Corepack.
@@ -30,6 +33,7 @@ Open http://localhost:3000. A different port can be selected with `pnpm dev --po
 - Vườn tri âm (`/play/adventure`): daily/weekly quests, six campaign chapters, achievements, collections, earned cosmetics, goals, activity reports and backup/restore. See [the 60-addition feature inventory](GAMIFICATION.md).
 - Poetry arcade (`/play/arcade`): ten new learning games, an optional no-hint contract, focus view, combos and reward-free targeted retries.
 - Reading quests (`/full`) and spaced practice (`/play/mastery`): explicitly confirm pages read, complete pause-aware focus sessions, and revisit learned lines across different days to build mastery.
+- Personal flashcard studio (`/play/studio`), evidence-based expeditions (`/play/expeditions`) and an eight-mechanic challenge arena (`/play/arena`): [54 additional features](GAMIFICATION-EXPANSION.md) for self-directed learning and close reading.
 - Optional server-side Gemini interpretation with validated inputs, timeouts and useful unavailable/error states.
 
 ## Data and privacy
@@ -45,6 +49,8 @@ Game progress uses the separate `kieu-games-v1` browser storage key. Only comple
 The optional reflection question stays in memory. A passage and its accompanying question are sent to Google Gemini only after the user chooses the AI interpretation button. No API keys or prompts are logged, and no AI key is bundled into client code.
 
 The adventure uses its own `kieu-adventure-v1` storage key and XP rules, documented in [GAMIFICATION.md](GAMIFICATION.md). New classic-game completions and successful reviews also contribute to adventure goals; old classic scores are preserved separately. Adventure export, import and reset affect only adventure data, not bookmarks or classic scores.
+
+Flashcard decks, notes and schedules, expedition routes and checkpoint history, and arena personal bests stay in the separate versioned browser stores described in [the expansion inventory](GAMIFICATION-EXPANSION.md). They are independent of adventure backup/reset. Self-rated flashcard recall and expedition claims add no scored XP; completed arena runs follow the adventure scoring rules.
 
 ## Optional AI configuration
 
@@ -62,7 +68,7 @@ The previous configuration exposed `GEMINI_API_KEY` through Next.js `env` and lo
 ## Validation
 
 ```sh
-pnpm check      # TypeScript, ESLint, and core regression tests
+pnpm check      # Formatting, TypeScript, zero-warning ESLint, and core regression tests
 pnpm test:api   # HTTP route and validation tests; starts/reuses a local dev server
 pnpm test:ui    # Chromium typography, responsive layout and interaction stress tests
 pnpm build     # Production compilation with type and lint checks enabled

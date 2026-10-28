@@ -544,6 +544,35 @@
   margin-top: 0;
   margin-bottom: 28px;
 }
+.learning-entry {
+  margin: 0 0 40px;
+}
+.learning-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.learning-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-wrap: anywhere;
+}
+.learning-card h3 {
+  font: 25px/1.5 var(--serif);
+}
+.learning-card p {
+  color: var(--muted-ink);
+  font-size: 14px;
+}
+.learning-card .text-link {
+  margin-top: auto;
+}
+@media (max-width: 800px) {
+  .learning-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .mastery-option {
   display: flex;
   justify-content: center;

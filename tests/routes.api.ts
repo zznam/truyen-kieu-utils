@@ -18,6 +18,9 @@ test('all primary routes render successfully', async ({ request }) => {
     '/play/adventure',
     '/play/arcade',
     '/play/mastery',
+    '/play/studio',
+    '/play/expeditions',
+    '/play/arena',
     ...[
       'word-order',
       'double-blank',
