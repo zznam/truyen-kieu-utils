@@ -1,0 +1,289 @@
+.studio-page {
+  max-width: 1180px;
+}
+.studio-page > .back-link {
+  margin-bottom: 28px;
+}
+.studio-page .page-heading {
+  text-align: left;
+}
+.studio-notice {
+  margin-bottom: 24px;
+}
+.studio-message {
+  min-height: 28px;
+  margin-bottom: 14px;
+  color: var(--green);
+  overflow-wrap: anywhere;
+}
+.studio-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 2fr);
+  gap: 24px;
+  align-items: start;
+}
+.studio-decks {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+}
+.studio-decks h2 {
+  font-size: 24px;
+}
+.studio-deck-list {
+  display: grid;
+  gap: 8px;
+}
+.studio-deck-list button {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.studio-deck-list button[aria-pressed='true'] {
+  border-color: var(--green);
+  background: var(--soft);
+}
+.studio-deck-list button > span {
+  min-width: 0;
+}
+.studio-deck-list small {
+  display: block;
+  color: var(--muted-ink);
+  margin-top: 4px;
+}
+.studio-main,
+.studio-form {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.studio-form label,
+.studio-label,
+.studio-settings > label,
+.studio-inline-form > label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  min-width: 0;
+}
+.studio-page input:not([type='checkbox']),
+.studio-page select,
+.studio-page textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+}
+.studio-page textarea {
+  resize: vertical;
+}
+.studio-page .button,
+.studio-page .text-button,
+.studio-page .icon-button {
+  min-height: 44px;
+}
+.studio-page .button {
+  white-space: normal;
+  text-align: center;
+}
+.studio-page .icon-button {
+  min-width: 44px;
+}
+.studio-inline-form {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.studio-inline-form > label {
+  flex: 1 1 180px;
+}
+.studio-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+.studio-row h2 {
+  font-size: 26px;
+}
+.studio-actions {
+  display: flex;
+  gap: 4px;
+}
+.studio-actions [aria-pressed='true'] {
+  color: var(--clay);
+}
+.studio-settings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+.studio-page .studio-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.studio-check input {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+}
+.studio-cards {
+  display: grid;
+  gap: 18px;
+}
+.studio-card {
+  padding: 24px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--surface);
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.studio-verse {
+  font: 20px/1.95 var(--serif);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.studio-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--green);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.studio-tags span {
+  border: 1px solid var(--rule);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.studio-card summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: list-item;
+  padding: 10px 0;
+  color: var(--green);
+}
+.studio-card summary:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+.studio-card details[open] > form {
+  margin-top: 12px;
+}
+.studio-study {
+  display: grid;
+  gap: 24px;
+  max-width: 820px;
+  margin: auto;
+}
+.studio-study h2:focus {
+  outline: none;
+}
+.studio-flashcard,
+.studio-answer {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 28px;
+  background: var(--paper);
+  display: grid;
+  gap: 18px;
+}
+.studio-answer {
+  border-color: var(--green);
+  background: var(--soft);
+}
+.studio-source {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+.studio-source a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.studio-private-note {
+  overflow-wrap: anywhere;
+}
+.studio-ratings,
+.studio-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.studio-ratings .button {
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 6px;
+}
+.studio-ratings span {
+  font-size: 11px;
+}
+.studio-summary {
+  margin: 0;
+}
+.studio-summary > div {
+  padding: 16px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+.studio-summary dt {
+  color: var(--muted-ink);
+  font-size: 12px;
+}
+.studio-summary dd {
+  margin: 10px 0 0;
+  font: 22px var(--serif);
+}
+@media (max-width: 760px) {
+  .studio-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .studio-deck-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .studio-main > .game-panel,
+  .studio-decks,
+  .studio-study {
+    padding: 22px;
+  }
+}
+@media (max-width: 420px) {
+  .studio-settings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .studio-ratings,
+  .studio-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .studio-card,
+  .studio-flashcard,
+  .studio-answer {
+    padding: 18px;
+  }
+  .studio-verse {
+    font-size: 18px;
+  }
+  .studio-deck-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
