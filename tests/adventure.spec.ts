@@ -202,3 +202,42 @@ test('classic completion updates adventure while unfinished rounds do not', asyn
   await page.reload()
   expect((await readState(page)).stats.sessions).toBe(1)
 })
+
+test('adventure panels retain filters, drafts and backup previews across tab changes', async ({
+  page,
+}) => {
+  await page.goto('/play/adventure')
+  const profileTab = page.getByRole('tab', { name: 'Góc của bạn', exact: true })
+  await profileTab.click()
+  await page.getByLabel('Bạn muốn được gọi là gì?').fill('Bản nháp chưa lưu')
+  await page.getByText('Hoặc dán nội dung bản sao', { exact: true }).click()
+  await page.getByLabel('Nội dung JSON', { exact: true }).fill(
+    JSON.stringify({
+      app: 'kieu-adventure',
+      version: 1,
+      state: emptyAdventure(),
+    })
+  )
+  await page.getByRole('button', { name: 'Xem trước bản sao', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Xem trước: Bạn đọc', exact: true })).toBeVisible()
+
+  await page.getByRole('tab', { name: 'Dấu ấn', exact: true }).click()
+  await page.getByRole('searchbox').fill('ĐỌC')
+  await page.getByRole('combobox', { name: /^Trạng thái/ }).selectOption('pending')
+  await expect(page.getByRole('heading', { name: 'Trang đầu', exact: true })).toBeVisible()
+  await page.getByRole('tab', { name: 'Bộ sưu tập', exact: true }).click()
+  await page.getByRole('tab', { name: 'Sổ luyện', exact: true }).click()
+  await page.getByRole('tab', { name: 'Quà tặng', exact: true }).click()
+  await page.getByRole('tab', { name: 'Đường thơ', exact: true }).click()
+  await page.getByRole('tab', { name: 'Dấu ấn', exact: true }).click()
+  await expect(page.getByRole('searchbox')).toHaveValue('ĐỌC')
+  await expect(page.getByRole('combobox', { name: /^Trạng thái/ })).toHaveValue('pending')
+
+  await profileTab.click()
+  await expect(page.getByLabel('Bạn muốn được gọi là gì?')).toHaveValue('Bản nháp chưa lưu')
+  await expect(page.getByRole('heading', { name: 'Xem trước: Bạn đọc', exact: true })).toBeVisible()
+  await expect(profileTab).toBeFocused()
+  await profileTab.press('Home')
+  await expect(page.getByRole('tab', { name: 'Hôm nay', exact: true })).toBeFocused()
+  expect((await readState(page)).profile?.name ?? '').toBe('')
+})
