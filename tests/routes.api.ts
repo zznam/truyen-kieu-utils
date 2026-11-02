@@ -1,44 +1,45 @@
 import { test, expect } from '@playwright/test'
 
-test('all primary routes render successfully', async ({ request }) => {
-  for (const route of [
-    '/',
-    '/full',
-    '/saved',
-    '/divination',
-    '/lay-kieu',
-    '/about',
-    '/play',
-    '/play/missing',
-    '/play/continuation',
-    '/play/order',
-    '/play/daily',
-    '/play/review',
-    '/play/journey',
-    '/play/adventure',
-    '/play/arcade',
-    '/play/mastery',
-    '/play/studio',
-    '/play/expeditions',
-    '/play/arena',
-    ...[
-      'word-order',
-      'double-blank',
-      'previous-verse',
-      'true-verse',
-      'syllable-count',
-      'changed-word',
-      'initials',
-      'typed-word',
-      'pair-match',
-      'recall',
-    ].map(mode => `/play/arcade/${mode}`),
-  ]) {
+// Each route gets its own timeout and failure report, including on a cold dev build.
+for (const route of [
+  '/',
+  '/full',
+  '/saved',
+  '/divination',
+  '/lay-kieu',
+  '/about',
+  '/play',
+  '/play/missing',
+  '/play/continuation',
+  '/play/order',
+  '/play/daily',
+  '/play/review',
+  '/play/journey',
+  '/play/adventure',
+  '/play/arcade',
+  '/play/mastery',
+  '/play/studio',
+  '/play/expeditions',
+  '/play/arena',
+  ...[
+    'word-order',
+    'double-blank',
+    'previous-verse',
+    'true-verse',
+    'syllable-count',
+    'changed-word',
+    'initials',
+    'typed-word',
+    'pair-match',
+    'recall',
+  ].map(mode => `/play/arcade/${mode}`),
+]) {
+  test(`${route} renders successfully`, async ({ request }) => {
     const response = await request.get(route)
     expect(response.status(), route).toBe(200)
     expect(await response.text()).toContain('lang="vi"')
-  }
-})
+  })
+}
 test('generation returns traceable 6/8 pairs and rejects malformed counts', async ({ request }) => {
   const response = await request.get('/api/lay-kieu?count=4')
   expect(response.status()).toBe(200)

@@ -306,6 +306,20 @@ export function arenaSettingsKey(settings: ArenaSettings): string {
   ].join('|')
 }
 
+// Every imported line can be bookmarked. Keep that valid configuration readable
+// without changing existing record keys or the seeds derived from them.
+const maximumLineId = Math.max(...verses.map(verse => verse.id))
+const maximumSettingsKeyLength = arenaSettingsKey({
+  modes: Object.keys(arenaModes) as ArenaMode[],
+  length: 10,
+  from: maximumLineId,
+  to: maximumLineId,
+  savedOnly: true,
+  savedIds: verses.map(verse => verse.id),
+  seed: '',
+  secondChance: true,
+}).length
+
 export function arenaDailySeed(date: Date): string {
   return `daily:${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
@@ -355,7 +369,7 @@ export function parseArena(value: unknown): ArenaState | null {
     if (
       !item ||
       typeof item !== 'object' ||
-      key.length > 15000 ||
+      key.length > maximumSettingsKeyLength ||
       !Number.isInteger(item.correct) ||
       !Number.isInteger(item.total) ||
       item.total < 1 ||

@@ -6,7 +6,13 @@ import { toast } from 'sonner'
 import { passageText, type Verse } from '@/lib/kieu'
 import { useLibrary } from './library-provider'
 
-export function PassageActions({ passage }: { passage: Verse[] }) {
+export function PassageActions({
+  passage,
+  onReadContext,
+}: {
+  passage: Verse[]
+  onReadContext?: () => void
+}) {
   const { library, toggleSaved, ready } = useLibrary()
   const [copied, setCopied] = useState(false)
   if (!passage.length) return null
@@ -44,6 +50,7 @@ export function PassageActions({ passage }: { passage: Verse[] }) {
         className="icon-button"
         href={`/full?line=${id}`}
         aria-label={`Đọc ngữ cảnh dòng ${id}`}
+        onNavigate={onReadContext}
       >
         <ArrowUpRight size={18} />
       </Link>

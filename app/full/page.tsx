@@ -53,15 +53,21 @@ function Reader() {
   const passage = selected === null ? [] : getPassage(selected)
   useEffect(() => {
     if (!ready || initialized.current === routeKey) return
+    // History updates reach useSearchParams after local state. Ignore the old
+    // URL snapshot so it cannot replace a newly focused page in between renders.
+    if (routeKey !== new URLSearchParams(window.location.search).toString()) return
     initialized.current = routeKey
     setSelected(null)
     const params = new URLSearchParams(routeKey)
     const search = params.get('q') || ''
+    const requestedPage = Number(params.get('page'))
+    const searchPage =
+      Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage - 1 : 0
     const requested = Number(params.get('line'))
     const id = verses.some(verse => verse.id === requested) ? requested : library.progress
     setQuery(search)
-    setPage(search ? 0 : Math.floor((id - 1) / PAGE_SIZE))
-    setHighlight(params.has('line') ? id : null)
+    setPage(search.trim() ? searchPage : Math.floor((id - 1) / PAGE_SIZE))
+    setHighlight(!search.trim() && params.has('line') ? id : null)
   }, [ready, library.progress, routeKey])
   useEffect(() => {
     if (!highlight || !ready) return
@@ -73,9 +79,26 @@ function Reader() {
     }
     line.scrollIntoView({ block: 'center' })
   }, [highlight, ready, safePage, deferredQuery, jumpRequest])
-  function clearSearch() {
-    setQuery('')
+  function replaceLocation(search: string, nextPage: number, lineId?: number) {
+    const params = new URLSearchParams()
+    if (search.trim()) {
+      params.set('q', search)
+      if (nextPage > 0) params.set('page', String(nextPage + 1))
+    } else {
+      params.set('line', String(lineId ?? verses[nextPage * PAGE_SIZE].id))
+    }
+    // Local actions already set state and focus; only external URL changes need hydration.
+    initialized.current = params.toString()
+    window.history.replaceState(null, '', `/full?${params}`)
+  }
+  function changeSearch(value: string) {
+    setQuery(value)
     setPage(0)
+    setHighlight(null)
+    replaceLocation(value, 0)
+  }
+  function clearSearch() {
+    changeSearch('')
     searchInput.current?.focus()
   }
   function navigate(next: number) {
@@ -84,8 +107,9 @@ function Reader() {
     if (!query.trim()) {
       const id = verses[value * PAGE_SIZE].id
       setProgress(id)
-      window.history.replaceState(null, '', `/full?line=${id}`)
     }
+    setHighlight(null)
+    replaceLocation(query, value)
     readerTop.current?.focus({ preventScroll: true })
     readerTop.current?.scrollIntoView({
       block: 'start',
@@ -102,7 +126,7 @@ function Reader() {
     setPage(Math.floor((id - 1) / PAGE_SIZE))
     setHighlight(id)
     setProgress(id)
-    window.history.replaceState(null, '', `/full?line=${id}`)
+    replaceLocation('', Math.floor((id - 1) / PAGE_SIZE), id)
   }
   return (
     <div className="shell page-content reader-page">
@@ -183,10 +207,7 @@ function Reader() {
                 aria-label="Tìm trong Truyện Kiều"
                 placeholder="Tìm câu thơ, từ khóa hoặc số dòng…"
                 value={query}
-                onChange={event => {
-                  setQuery(event.target.value)
-                  setPage(0)
-                }}
+                onChange={event => changeSearch(event.target.value)}
               />
               {query && (
                 <button className="icon-button" aria-label="Xóa tìm kiếm" onClick={clearSearch}>
@@ -307,7 +328,7 @@ function Reader() {
               <p key={verse.id}>{verse.text}</p>
             ))}
           </blockquote>
-          <PassageActions passage={passage} />
+          <PassageActions passage={passage} onReadContext={() => setSelected(null)} />
           <div className="dialog-note">
             <Sparkles size={18} />
             <p>Đọc trong ngữ cảnh để cảm nhận trọn vẹn câu thơ.</p>
