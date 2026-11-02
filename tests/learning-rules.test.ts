@@ -125,8 +125,23 @@ test('expeditions count new evidence after each checkpoint and accept only one a
   }
   let state = saveExpeditionRoute(emptyExpeditions(), route)
   state = saveExpeditionRoute(state, { ...route, id: 'other-route' })
-  state = startExpedition(state, route.id, baseline, '2026-10-29')
-  assert.strictEqual(startExpedition(state, 'other-route', baseline, '2026-10-29'), state)
+  state = startExpedition(
+    state,
+    route.id,
+    baseline,
+    '2026-10-29',
+    '11111111-1111-4111-8111-111111111111'
+  )
+  assert.strictEqual(
+    startExpedition(
+      state,
+      'other-route',
+      baseline,
+      '2026-10-29',
+      '22222222-2222-4222-8222-222222222222'
+    ),
+    state
+  )
   assert.equal(stageProgress(state.routes[0], baseline)?.value, 0)
   assert.strictEqual(claimExpeditionCheckpoint(state, route.id, baseline, '2026-10-29'), state)
 

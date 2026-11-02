@@ -48,6 +48,10 @@ Self-ratings are personal estimates. They do not award adventure XP or objective
 
 Expeditions measure adventure activity, including confirmed reading, correct game answers, successful review, focus minutes, topic discoveries and creative practice. Checkpoints add no extra XP; the original activities retain their existing rewards. Unique reading and topic goals require new lines or discoveries. Clearing or restoring adventure progress can change the available evidence.
 
+Use “Dừng lần đi này” to release the active expedition slot when a goal is no longer suitable or cannot be completed. A confirmation dialog explains that only the unfinished attempt and its checkpoints are discarded. Completed attempts and all adventure activity and XP remain intact. A route with no completed attempt returns to draft; a previously completed route returns to completed.
+
+The confirmation applies to the attempt as it was when the dialog opened. If another tab changes its checkpoints or starts a new attempt, the old confirmation preserves that progress and asks you to review the route before confirming again.
+
 ## Challenge arena — `/play/arena`
 
 37. Restore Vietnamese diacritics by identifying the original line.

@@ -17,6 +17,8 @@ export type ExpeditionTotals = Record<ExpeditionMetric, number>
 export type ExpeditionStage = { id: string; metric: ExpeditionMetric; target: number }
 export type ExpeditionCheckpoint = { stageId: string; claimedAt: string; evidence: number }
 export type ExpeditionAttempt = {
+  // Earlier v1 saves did not assign an identity to each attempt.
+  id?: string
   startedAt: string
   baseline: ExpeditionTotals
   stageBaseline: ExpeditionTotals
@@ -33,6 +35,10 @@ export type ExpeditionRoute = {
   attempts: ExpeditionAttempt[]
 }
 export type ExpeditionsState = { version: 1; routes: ExpeditionRoute[]; pinnedId: string | null }
+export type ExpeditionStopSnapshot = {
+  attemptCount: number
+  attempt: ExpeditionAttempt
+}
 export const metricDetails: Record<
   ExpeditionMetric,
   { label: string; unit: string; limit: number; note: string }
@@ -126,6 +132,7 @@ function validDay(value: string) {
 }
 const daySchema = z.string().refine(validDay)
 const idSchema = z.string().regex(/^[a-zA-Z0-9-]{1,80}$/)
+const attemptIdSchema = z.string().uuid().toLowerCase()
 const totalsSchema = z
   .object(
     Object.fromEntries(
@@ -151,6 +158,7 @@ const routeSchema = z
       .array(
         z
           .object({
+            id: attemptIdSchema.optional(),
             startedAt: daySchema,
             baseline: totalsSchema,
             stageBaseline: totalsSchema,
@@ -187,11 +195,16 @@ export function parseExpeditions(value: unknown): ExpeditionsState | null {
   if (new Set(state.routes.map(route => route.id)).size !== state.routes.length) return null
   if (state.pinnedId && !state.routes.some(route => route.id === state.pinnedId)) return null
   if (state.routes.filter(route => route.status === 'active').length > 1) return null
+  const attemptIds = new Set<string>()
   for (const route of state.routes) {
     if (new Set(route.stages.map(stage => stage.id)).size !== route.stages.length) return null
     if (route.status === 'draft' && route.attempts.length) return null
     if (route.status !== 'draft' && !route.attempts.length) return null
     for (const [attemptIndex, attempt] of route.attempts.entries()) {
+      if (attempt.id) {
+        if (attemptIds.has(attempt.id)) return null
+        attemptIds.add(attempt.id)
+      }
       if (
         EXPEDITION_METRICS.some(metric => attempt.stageBaseline[metric] < attempt.baseline[metric])
       )
@@ -284,11 +297,15 @@ export function startExpedition(
   state: ExpeditionsState,
   id: string,
   totals: ExpeditionTotals,
-  today: string
+  today: string,
+  attemptId: string
 ): ExpeditionsState {
   const route = state.routes.find(item => item.id === id)
+  const identity = attemptIdSchema.safeParse(attemptId)
   if (
     !route ||
+    !identity.success ||
+    state.routes.some(item => item.attempts.some(attempt => attempt.id === identity.data)) ||
     !validDay(today) ||
     !totalsSchema.safeParse(totals).success ||
     state.routes.some(item => item.status === 'active') ||
@@ -298,6 +315,7 @@ export function startExpedition(
   )
     return state
   const attempt: ExpeditionAttempt = {
+    id: identity.data,
     startedAt: today,
     baseline: { ...totals },
     stageBaseline: { ...totals },
@@ -362,6 +380,66 @@ export function pinExpedition(state: ExpeditionsState, id: string | null): Exped
   return state.pinnedId === id || (id !== null && !state.routes.some(route => route.id === id))
     ? state
     : { ...state, pinnedId: id }
+}
+
+export function expeditionStopSnapshot(route: ExpeditionRoute): ExpeditionStopSnapshot | null {
+  const attempt = currentAttempt(route)
+  if (route.status !== 'active' || !attempt) return null
+  return {
+    attemptCount: route.attempts.length,
+    attempt: {
+      ...attempt,
+      baseline: { ...attempt.baseline },
+      stageBaseline: { ...attempt.stageBaseline },
+      checkpoints: attempt.checkpoints.map(checkpoint => ({ ...checkpoint })),
+    },
+  }
+}
+
+function sameAttempt(current: ExpeditionAttempt, expected: ExpeditionAttempt) {
+  return (
+    current.id === expected.id &&
+    current.startedAt === expected.startedAt &&
+    current.completedAt === expected.completedAt &&
+    EXPEDITION_METRICS.every(
+      metric =>
+        current.baseline[metric] === expected.baseline[metric] &&
+        current.stageBaseline[metric] === expected.stageBaseline[metric]
+    ) &&
+    current.checkpoints.length === expected.checkpoints.length &&
+    current.checkpoints.every((checkpoint, index) => {
+      const previous = expected.checkpoints[index]
+      return (
+        checkpoint.stageId === previous.stageId &&
+        checkpoint.claimedAt === previous.claimedAt &&
+        checkpoint.evidence === previous.evidence
+      )
+    })
+  )
+}
+
+/** A confirmation may only discard the attempt the reader saw when opening it. */
+export function stopExpedition(
+  state: ExpeditionsState,
+  id: string,
+  expected: ExpeditionStopSnapshot
+): ExpeditionsState {
+  const route = state.routes.find(item => item.id === id)
+  if (!route || route.status !== 'active') return state
+  const attempt = currentAttempt(route)
+  if (
+    !attempt ||
+    route.attempts.length !== expected.attemptCount ||
+    !sameAttempt(attempt, expected.attempt)
+  )
+    return state
+  const attempts = route.attempts.slice(0, -1)
+  return {
+    ...state,
+    routes: state.routes.map(item =>
+      item.id === id ? { ...item, status: attempts.length ? 'completed' : 'draft', attempts } : item
+    ),
+  }
 }
 
 export function setExpeditionDeadline(

@@ -1,16 +1,24 @@
 'use client'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
-import { Bookmark, ArrowRight, Download, Search } from 'lucide-react'
+import { Bookmark, ArrowRight, Download, Search, X } from 'lucide-react'
 import { useLibrary } from '@/components/library-provider'
 import { PassageCard } from '@/components/passage-card'
 import { getPassage, normalize, passageText } from '@/lib/kieu'
 export default function Saved() {
   const { library, ready } = useLibrary()
   const [query, setQuery] = useState('')
+  const searchInput = useRef<HTMLInputElement>(null)
+  const term = normalize(query.trim())
   const passages = library.saved
     .map(getPassage)
-    .filter(pair => pair.some(verse => normalize(verse.text).includes(normalize(query))))
+    .filter(pair =>
+      pair.some(verse => normalize(verse.text).includes(term) || String(verse.id) === term)
+    )
+  function clearSearch() {
+    setQuery('')
+    searchInput.current?.focus()
+  }
   function download() {
     const data = library.saved.map(id => passageText(getPassage(id))).join('\n\n')
     const url = URL.createObjectURL(
@@ -37,17 +45,26 @@ export default function Saved() {
             <div className="search-field">
               <Search size={18} />
               <input
+                ref={searchInput}
                 aria-label="Tìm trong câu thơ đã lưu"
-                placeholder="Tìm trong bộ sưu tập…"
+                placeholder="Tìm từ khóa hoặc số dòng…"
                 value={query}
                 onChange={event => setQuery(event.target.value)}
               />
+              {query && (
+                <button className="icon-button" aria-label="Xóa tìm kiếm" onClick={clearSearch}>
+                  <X size={16} />
+                </button>
+              )}
             </div>
             <button className="button secondary" onClick={download}>
               <Download size={17} />
               Tải bộ sưu tập ({library.saved.length})
             </button>
           </div>
+          <p className="muted small" role="status">
+            {passages.length} / {library.saved.length} đoạn thơ
+          </p>
           <div className="collection-grid">
             {passages.map(pair => (
               <PassageCard key={pair[0].id} passage={pair} />
@@ -57,8 +74,8 @@ export default function Saved() {
             <div className="empty-state">
               <Search size={28} />
               <h2>Chưa có câu thơ phù hợp</h2>
-              <button className="text-button" onClick={() => setQuery('')}>
-                Xóa tìm kiếm
+              <button className="text-button" onClick={clearSearch}>
+                Xem tất cả câu thơ đã lưu
               </button>
             </div>
           )}

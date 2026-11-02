@@ -6,6 +6,17 @@ import { ArrowLeft, ArrowUpRight, Flag, Map, Pin, ScrollText } from 'lucide-reac
 import { useGamification } from '@/components/gamification-provider'
 import { useLocalStore } from '@/hooks/use-local-store'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import {
   EXPEDITIONS_STORAGE_KEY,
   EXPEDITION_LIMIT,
   EXPEDITION_METRICS,
@@ -16,6 +27,7 @@ import {
   emptyExpeditions,
   expeditionDeadline,
   expeditionRecommendation,
+  expeditionStopSnapshot,
   expeditionTemplates,
   expeditionTotals,
   metricDetails,
@@ -26,8 +38,10 @@ import {
   setExpeditionDeadline,
   stageProgress,
   startExpedition,
+  stopExpedition,
   type ExpeditionMetric,
   type ExpeditionRoute,
+  type ExpeditionStopSnapshot,
   type ExpeditionsState,
 } from '@/lib/expeditions'
 import './expeditions.css'
@@ -60,6 +74,10 @@ export default function ExpeditionsPage() {
   const [notice, setNotice] = useState('')
   const [showArchive, setShowArchive] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [stopConfirmation, setStopConfirmation] = useState<{
+    routeId: string
+    snapshot: ExpeditionStopSnapshot
+  } | null>(null)
   const nameInput = useRef<HTMLInputElement>(null)
   const cancelDelete = useRef<HTMLButtonElement>(null)
   const ready = game.ready && store.ready
@@ -86,6 +104,25 @@ export default function ExpeditionsPage() {
     const changed = store.update(recipe)
     setNotice(changed ? success : 'Chưa thể thực hiện. Hãy kiểm tra điều kiện của lộ trình.')
     return changed
+  }
+  function stopRoute(id: string) {
+    if (!stopConfirmation || stopConfirmation.routeId !== id) return
+    const changed = store.update(previous =>
+      stopExpedition(previous, id, stopConfirmation.snapshot)
+    )
+    setNotice(
+      changed
+        ? 'Đã dừng lần đi đang dở. Hoạt động, XP và các lần đi đã hoàn thành vẫn được giữ.'
+        : 'Lần đi đã thay đổi từ khi bạn mở xác nhận. Tiến độ mới vẫn được giữ. Hãy kiểm tra lộ trình và mở lại xác nhận nếu vẫn muốn dừng.'
+    )
+  }
+  function startRoute(id: string, success: string) {
+    const attemptId = crypto.randomUUID()
+    return act(
+      previous =>
+        startExpedition(previous, id, expeditionTotals(game.state), game.today, attemptId),
+      success
+    )
   }
   function chooseTemplate(template: (typeof expeditionTemplates)[number]) {
     const route: ExpeditionRoute = {
@@ -501,14 +538,8 @@ export default function ExpeditionsPage() {
                             className="expedition-button"
                             disabled={Boolean(active || unavailable)}
                             onClick={() =>
-                              act(
-                                previous =>
-                                  startExpedition(
-                                    previous,
-                                    route.id,
-                                    expeditionTotals(game.state),
-                                    game.today
-                                  ),
+                              startRoute(
+                                route.id,
                                 'Đã khởi hành. Hoạt động mới từ bây giờ sẽ được tính cho chặng đầu.'
                               )
                             }
@@ -575,6 +606,44 @@ export default function ExpeditionsPage() {
                         </button>
                       </div>
                     )}
+                    <AlertDialog
+                      onOpenChange={open => {
+                        const snapshot = open ? expeditionStopSnapshot(route) : null
+                        setStopConfirmation(snapshot ? { routeId: route.id, snapshot } : null)
+                      }}
+                    >
+                      {route.status === 'active' && (
+                        <AlertDialogTrigger asChild>
+                          <button id={`stop-route-${route.id}`} className="expedition-text-button">
+                            Dừng lần đi này
+                          </button>
+                        </AlertDialogTrigger>
+                      )}
+                      <AlertDialogContent
+                        className="max-h-[calc(100dvh-2rem)] max-w-[calc(100vw-2rem)] overflow-y-auto [overflow-wrap:anywhere] sm:max-w-lg"
+                        onCloseAutoFocus={event => {
+                          if (!document.getElementById(`stop-route-${route.id}`)) {
+                            event.preventDefault()
+                            document.getElementById(`route-${route.id}`)?.focus()
+                          }
+                        }}
+                      >
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Dừng lần đi “{route.name}”?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Lần đi đang dở và các chặng đã xác nhận của lần này sẽ được bỏ. Những
+                            lần đi đã hoàn thành, hoạt động đọc và XP vẫn được giữ. Bạn có thể chọn
+                            một lộ trình khác sau khi dừng.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Tiếp tục lần đi</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => stopRoute(route.id)}>
+                            Xác nhận dừng lần đi
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                     {attempt?.completedAt && (
                       <div
                         className="expedition-certificate"
@@ -603,14 +672,8 @@ export default function ExpeditionsPage() {
                             disabled={Boolean(active || unavailable || route.attempts.length >= 20)}
                             onClick={() => {
                               if (
-                                act(
-                                  previous =>
-                                    startExpedition(
-                                      previous,
-                                      route.id,
-                                      expeditionTotals(game.state),
-                                      game.today
-                                    ),
+                                startRoute(
+                                  route.id,
                                   'Đã mở lần đi mới từ tiến độ hiện tại; các lần đi cũ vẫn được giữ.'
                                 )
                               )

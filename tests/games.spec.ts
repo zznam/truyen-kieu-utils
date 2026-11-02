@@ -198,6 +198,8 @@ test('home and tablet navigation lead to games and highlight the active section'
   await page.getByRole('link', { name: /Điền chữ, nối câu, xếp thơ/ }).click()
   await expect(page).toHaveURL(/\/play$/)
   await page.getByRole('link', { name: /Điền chữ còn thiếu/ }).click()
+  await expect(page).toHaveURL(/\/play\/missing$/)
+  await expect(page.getByRole('heading', { level: 1, name: 'Điền chữ còn thiếu' })).toBeVisible()
   await page.getByRole('button', { name: 'Mở menu' }).click()
   const nav = page.getByRole('navigation', { name: 'Điều hướng di động' })
   await expect(nav.getByRole('link', { name: 'Chơi cùng Kiều' })).toHaveAttribute(

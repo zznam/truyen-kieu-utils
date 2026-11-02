@@ -20,8 +20,8 @@ Open http://localhost:3000. A different port can be selected with `pnpm dev --po
 
 - Responsive literary design with light and dark themes, keyboard navigation, and reduced-motion support.
 - Self-hosted Noto Serif and Noto Sans with Vietnamese glyph coverage and real italics; no external font service is needed at runtime or build time.
-- Paginated reader with accent-insensitive Vietnamese search, exact line lookup, four text sizes, and a remembered reading position.
-- Browser-local passage bookmarks, searchable collections, text export, copy and direct source links.
+- Paginated reader with accent-insensitive Vietnamese search, exact line lookup, four text sizes, and a remembered reading position. Search links retain the query and result page when copied or reloaded.
+- Browser-local passage bookmarks, collections searchable by text or source line, text export, copy and direct source links. Either line of a couplet resolves to one saved passage.
 - A daily passage based on the reader’s local calendar date.
 - Topic discovery with Vietnamese words matched without conflating tones.
 - Bói Kiều: random original couplets, optional reflection prompt, and the last five draws in the current session.
@@ -44,6 +44,8 @@ Rhyme suggestions compare written rhyme endings. They do not claim to fully vali
 
 Bookmarks, reading position and font size use the versioned `kieu-library-v1` browser storage key. They are not uploaded or synced to an account. If browser storage is unavailable, reading still works and changes remain in memory for the session. Export collections before clearing browser data.
 
+Library changes are shared with other tabs on the same browser. Updates reread the latest saved library, and clearing it in another tab is respected instead of restoring old bookmarks on the next preference change. Simultaneous writes remain best effort.
+
 Game progress uses the separate `kieu-games-v1` browser storage key. Only completed sessions count; unfinished games restart on leaving the page. A correct answer earns 10 XP (5 with a hint); the first daily completion earns another 10 XP. A streak counts consecutive local dates with a completed session and remains active through the following day. Progress stays in memory if storage is unavailable. The same storage key also holds up to 100 review questions (mode and source ID only), the last 90 active dates of mission counters, and 20 recent results. Older XP, badges and streaks are preserved; detailed history and missions start with new completions. The mission bonus must be claimed that day and is separate from game scores. These are personal practice scores, not a verified or synced leaderboard.
 
 The optional reflection question stays in memory. A passage and its accompanying question are sent to Google Gemini only after the user chooses the AI interpretation button. No API keys or prompts are logged, and no AI key is bundled into client code.
@@ -51,6 +53,8 @@ The optional reflection question stays in memory. A passage and its accompanying
 The adventure uses its own `kieu-adventure-v1` storage key and XP rules, documented in [GAMIFICATION.md](GAMIFICATION.md). New classic-game completions and successful reviews also contribute to adventure goals; old classic scores are preserved separately. Adventure export, import and reset affect only adventure data, not bookmarks or classic scores.
 
 Flashcard decks, notes and schedules, expedition routes and checkpoint history, and arena personal bests stay in the separate versioned browser stores described in [the expansion inventory](GAMIFICATION-EXPANSION.md). They are independent of adventure backup/reset. Self-rated flashcard recall and expedition claims add no scored XP; completed arena runs follow the adventure scoring rules.
+
+An active expedition can be stopped after confirmation to choose another route. This discards only the unfinished attempt and its checkpoints; completed attempts, reading activity and XP remain intact.
 
 ## Optional AI configuration
 

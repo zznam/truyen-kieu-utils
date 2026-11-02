@@ -136,6 +136,10 @@
   background: var(--soft);
   border: 1px solid var(--rule);
   border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.expedition-resume > div {
+  min-width: 0;
 }
 .expedition-resume > svg {
   flex-shrink: 0;
@@ -163,6 +167,7 @@
   font-size: 12px;
   margin-block: 16px;
   flex-wrap: wrap;
+  overflow-wrap: anywhere;
 }
 .expedition-editor {
   padding: 28px;
