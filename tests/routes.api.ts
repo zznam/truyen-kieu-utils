@@ -8,6 +8,7 @@ for (const route of [
   '/saved',
   '/divination',
   '/lay-kieu',
+  '/lay-kieu/workshop',
   '/about',
   '/play',
   '/play/missing',

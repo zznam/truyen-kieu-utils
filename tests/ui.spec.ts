@@ -103,6 +103,9 @@ base('Vietnamese reading fonts load locally and remain available offline', async
   expect(fonts.italic).toBeGreaterThan(0)
   expect(fontUrls.length).toBeGreaterThan(0)
   expect(fontUrls.every(url => new URL(url).origin === new URL(page.url()).origin)).toBe(true)
+  // Finish speculative route prefetches before isolating offline font behavior.
+  // Otherwise an unrelated canceled RSC request races the console-error assertion.
+  await page.waitForLoadState('networkidle')
   await page.context().setOffline(true)
   await page.getByLabel('Cỡ chữ').selectOption('30')
   await expect(page.locator('.verse-text').first()).toHaveCSS('font-size', '30px')

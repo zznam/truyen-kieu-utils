@@ -52,6 +52,9 @@ export default function LayKieu() {
         <div className="eyebrow">CÂU XƯA, CẢM HỨNG MỚI</div>
         <h1>Để Kiều nói hộ lòng bạn.</h1>
         <p>Tìm một câu thơ hợp tâm tình. Hoặc thử ghép những vần lục bát theo cách riêng.</p>
+        <Link className="button secondary" href="/lay-kieu/workshop">
+          Mở xưởng Lẩy Kiều
+        </Link>
       </header>
       <div className="section-heading">
         <h2>Bạn tìm cảm hứng gì?</h2>
