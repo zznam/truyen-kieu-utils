@@ -23,6 +23,7 @@ Open http://localhost:3000. A different port can be selected with `pnpm dev --po
 - Paginated reader with accent-insensitive Vietnamese search, exact line lookup, four text sizes, and a remembered reading position. Search links retain the query and result page when copied or reloaded.
 - Browser-local passage bookmarks, collections searchable by text or source line, text export, copy and direct source links. Either line of a couplet resolves to one saved passage.
 - A daily passage based on the reader’s local calendar date.
+- Phòng đọc (`/reading-room`): [14 close-reading additions](READING-ROOM.md), including custom excerpts, context, focus view, guided reading, memorization, written recall, Vietnamese read-aloud, comparison, word concordance and a private notebook with validated backup recovery.
 - Topic discovery with Vietnamese words matched without conflating tones.
 - Bói Kiều: random original couplets, optional reflection prompt, and the last five draws in the current session.
 - Lẩy Kiều: generated 6/8-syllable pairs with source links. Matching uses the last syllable of the six-syllable line and the sixth syllable of the eight-syllable line, preserving vowel quality when stripping tone marks.
@@ -43,6 +44,8 @@ The original `app/data/truyen-kieu.ts` is preserved. It contains 3,257 entries, 
 Rhyme suggestions compare written rhyme endings. They do not claim to fully validate Vietnamese poetic tone rules or the meaning of a generated pairing.
 
 Bookmarks, reading position and font size use the versioned `kieu-library-v1` browser storage key. They are not uploaded or synced to an account. If browser storage is unavailable, reading still works and changes remain in memory for the session. Export collections before clearing browser data.
+
+The reading room keeps excerpt queues, positions and private reflections in its separate `kieu-reading-room-v1` store. Its export/import controls affect only that notebook. Typed recall stays in memory and awards no XP. Read-aloud requires a Vietnamese device voice and starts only after a click; network-backed browser voices may send poem text to their speech service. Reflections are never supplied to speech or AI. See [reading room behavior and limits](READING-ROOM.md).
 
 Library changes are shared with other tabs on the same browser. Updates reread the latest saved library, and clearing it in another tab is respected instead of restoring old bookmarks on the next preference change. Simultaneous writes remain best effort.
 

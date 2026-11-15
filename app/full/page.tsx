@@ -2,6 +2,7 @@
 
 import { Suspense, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { Search, ArrowLeft, ArrowRight, Bookmark, X, BookOpen, Sparkles } from 'lucide-react'
 import { verses, PAGE_SIZE, searchVerses, getPassage, normalize } from '@/lib/kieu'
 import { useLibrary } from '@/components/library-provider'
@@ -142,6 +143,9 @@ function Reader() {
             <h2>Truyện Kiều</h2>
           </div>
           <p className="muted small">Đoạn trường tân thanh</p>
+          <Link className="button secondary" href="/reading-room">
+            Vào phòng đọc
+          </Link>
           <div className="reading-progress">
             <span>Vị trí đã lưu</span>
             <strong>Dòng {library.progress.toLocaleString('vi-VN')}</strong>

@@ -14,6 +14,7 @@ Page-specific styles remain beside their routes. Shared UI primitives live in `c
 | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Imported text, passages, search and topics                  | `lib/kieu.ts`; preserve `app/data/truyen-kieu.ts`                                             |
 | Bookmarks, reader preferences and persistence               | `components/library-provider.tsx`                                                             |
+| Close reading, recall, concordance and private notebook     | `lib/reading-room.ts`, `components/reading-room/`, `hooks/use-read-aloud.ts`                  |
 | Classic games, scores, missions and mistake review          | `lib/games.ts`, `lib/game-progress.ts`, `lib/game-journey.ts`, `components/game-provider.tsx` |
 | Adventure events, rewards, milestones and backup validation | `lib/gamification.ts`, `components/gamification-provider.tsx`                                 |
 | Adventure tab navigation                                    | `app/play/adventure/page.tsx`                                                                 |
@@ -35,6 +36,7 @@ preserves vowel quality and has its own normalization in `app/services/lay_kieu.
 Source links and exports must retain attribution to the imported edition.
 
 Treat storage and imported JSON as untrusted inputs. Each store has a versioned key and parser.
+Library parsing and preference write guards live in `lib/library.ts`; the provider bridges them to browser storage.
 Preserve existing save compatibility and memory-only behavior when storage fails. Adventure,
 classic games, bookmarks and the three learning stores have separate backup/reset boundaries;
 see the feature inventories before changing their behavior.

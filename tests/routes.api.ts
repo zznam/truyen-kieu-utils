@@ -4,6 +4,7 @@ import { test, expect } from '@playwright/test'
 for (const route of [
   '/',
   '/full',
+  '/reading-room',
   '/saved',
   '/divination',
   '/lay-kieu',

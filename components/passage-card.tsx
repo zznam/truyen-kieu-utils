@@ -54,6 +54,9 @@ export function PassageActions({
       >
         <ArrowUpRight size={18} />
       </Link>
+      <Link className="text-button" href={`/reading-room?from=${id}&to=${passage.at(-1)!.id}`}>
+        Phòng đọc
+      </Link>
     </div>
   )
 }
