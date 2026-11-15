@@ -2,38 +2,20 @@
 
 import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react'
 import { toast } from 'sonner'
-import { getPassage, verses } from '@/lib/kieu'
+import {
+  canonicalSavedId,
+  changeLibraryFontSize,
+  changeLibraryProgress,
+  emptyLibrary,
+  parseLibrary,
+  type Library,
+} from '@/lib/library'
 import { useLocalStore } from '@/hooks/use-local-store'
 import { useGamification } from './gamification-provider'
 
 const STORAGE_KEY = 'kieu-library-v1'
-type Library = { saved: number[]; progress: number; fontSize: number }
-function emptyLibrary(): Library {
-  return { saved: [], progress: 1, fontSize: 22 }
-}
+export { parseLibrary } from '@/lib/library'
 const defaults = emptyLibrary()
-const validIds = new Set(verses.map(verse => verse.id))
-export function parseLibrary(value: unknown): Library {
-  if (!value || typeof value !== 'object') return defaults
-  const data = value as Partial<Library>
-  return {
-    saved: Array.isArray(data.saved)
-      ? [
-          ...new Set(
-            data.saved
-              .filter(id => Number.isInteger(id) && validIds.has(id))
-              // Either line of a couplet refers to the same saved passage.
-              .map(id => getPassage(id)[0].id)
-          ),
-        ]
-      : [],
-    progress: typeof data.progress === 'number' && validIds.has(data.progress) ? data.progress : 1,
-    fontSize:
-      typeof data.fontSize === 'number' && [18, 22, 26, 30].includes(data.fontSize)
-        ? data.fontSize
-        : 22,
-  }
-}
 const LibraryContext = createContext<{
   library: Library
   ready: boolean
@@ -77,8 +59,9 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     if (!storageAvailable)
       toast.info('Trình duyệt không cho phép lưu dữ liệu. Dấu trang chỉ được giữ trong phiên này.')
   }, [library, storageAvailable])
-  const toggleSaved = (id: number) => {
-    if (!ready || !validIds.has(id)) return
+  const toggleSaved = (requestedId: number) => {
+    const id = canonicalSavedId(requestedId)
+    if (!ready || id === null) return
     const shouldSave = !library.saved.includes(id)
     savedAction.current = true
     let added = false
@@ -101,8 +84,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
         library,
         ready,
         toggleSaved,
-        setProgress: id => update(current => ({ ...current, progress: id })),
-        setFontSize: fontSize => update(current => ({ ...current, fontSize })),
+        setProgress: id => update(current => changeLibraryProgress(current, id)),
+        setFontSize: fontSize => update(current => changeLibraryFontSize(current, fontSize)),
       }}
     >
       {children}
