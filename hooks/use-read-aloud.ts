@@ -88,7 +88,15 @@ export function useReadAloud() {
         setError('Trình duyệt chưa thể phát giọng đọc.')
       }
     }
-    speak(start)
+    try {
+      // cancel() clears utterances but preserves the engine's paused state.
+      // Only an explicit new play may resume it; stop and cleanup stay silent.
+      if (engine.paused) engine.resume()
+      speak(start)
+    } catch {
+      stop()
+      setError('Trình duyệt chưa thể phát giọng đọc.')
+    }
   }
 
   function togglePause() {

@@ -269,18 +269,19 @@ for (const width of [320, 768, 1280]) {
   })
 }
 
-test('read-aloud follows lines, pauses and ignores canceled callbacks after navigation', async ({
-  page,
-}) => {
+async function installSpeechHarness(page: Page) {
   await page.addInitScript(() => {
-    const spoken: { text: string; onend: (() => void) | null }[] = []
+    const spoken: Utterance[] = []
+    const started = new Set<Utterance>()
+    let queue: Utterance[] = []
+    let paused = false
     let cancellations = 0
     let pauses = 0
     let resumes = 0
     class Utterance {
       text: string
-      onend = null
-      onerror = null
+      onend: (() => void) | null = null
+      onerror: (() => void) | null = null
       constructor(text: string) {
         this.text = text
       }
@@ -289,37 +290,60 @@ test('read-aloud follows lines, pauses and ignores canceled callbacks after navi
       value: Utterance,
       configurable: true,
     })
+    function startCurrent() {
+      if (!paused && queue[0]) started.add(queue[0])
+    }
+    const engine = Object.assign(new EventTarget(), {
+      getVoices: () => [
+        {
+          voiceURI: 'vietnamese',
+          name: 'Tiếng Việt thử nghiệm',
+          lang: 'vi-VN',
+          localService: true,
+        },
+      ],
+      speak: (utterance: Utterance) => {
+        spoken.push(utterance)
+        queue.push(utterance)
+        startCurrent()
+      },
+      cancel: () => {
+        cancellations++
+        queue = []
+      },
+      pause: () => {
+        pauses++
+        paused = true
+      },
+      resume: () => {
+        resumes++
+        paused = false
+        startCurrent()
+      },
+    })
+    Object.defineProperty(engine, 'paused', { get: () => paused })
     Object.defineProperty(window, 'speechSynthesis', {
       configurable: true,
-      value: Object.assign(new EventTarget(), {
-        getVoices: () => [
-          {
-            voiceURI: 'vietnamese',
-            name: 'Tiếng Việt thử nghiệm',
-            lang: 'vi-VN',
-            localService: true,
-          },
-        ],
-        speak: (utterance: Utterance) => spoken.push(utterance),
-        cancel: () => {
-          cancellations++
-        },
-        pause: () => {
-          pauses++
-        },
-        resume: () => {
-          resumes++
-        },
-      }),
+      value: engine,
     })
     Object.defineProperty(window, 'speechHarness', {
       value: {
         spoken,
-        end: (index: number) => spoken[index].onend?.(),
+        end: (index: number) => {
+          queue = queue.filter(utterance => utterance !== spoken[index])
+          spoken[index].onend?.()
+        },
         stats: () => ({ cancellations, pauses, resumes }),
+        playback: () => ({ paused, queued: queue.length, started: started.size }),
       },
     })
   })
+}
+
+test('read-aloud follows lines, pauses and ignores canceled callbacks after navigation', async ({
+  page,
+}) => {
+  await installSpeechHarness(page)
   await page.goto('/reading-room?from=1&to=2')
   await page.getByRole('button', { name: 'Nghe từ dòng hiện tại' }).click()
   await expect(page.getByRole('status').filter({ hasText: 'Đang đọc thành tiếng' })).toBeVisible()
@@ -352,10 +376,44 @@ test('read-aloud follows lines, pauses and ignores canceled callbacks after navi
   ).toBe(3)
 })
 
+test('a new play resumes paused speech after cancellation while stop and unmount stay silent', async ({
+  page,
+}) => {
+  await installSpeechHarness(page)
+  await page.goto('/reading-room?from=1&to=2')
+  const playback = () =>
+    page.evaluate(() => (window as unknown as SpeechWindow).speechHarness.playback())
+  await page.getByRole('button', { name: 'Nghe từ dòng hiện tại' }).click()
+  await expect.poll(playback).toEqual({ paused: false, queued: 1, started: 1 })
+  await page.getByRole('button', { name: 'Tạm dừng nghe', exact: true }).click()
+  await page.getByRole('button', { name: 'Dừng nghe', exact: true }).click()
+  await expect.poll(playback).toEqual({ paused: true, queued: 0, started: 1 })
+  expect(
+    (await page.evaluate(() => (window as unknown as SpeechWindow).speechHarness.stats())).resumes
+  ).toBe(0)
+
+  await page.getByRole('button', { name: 'Nghe từ dòng hiện tại' }).click()
+  await expect.poll(playback).toEqual({ paused: false, queued: 1, started: 2 })
+  await page.getByRole('button', { name: 'Tạm dừng nghe', exact: true }).click()
+  await openNotebook(page)
+  await expect.poll(playback).toEqual({ paused: true, queued: 0, started: 2 })
+  await page.getByRole('tab', { name: 'Đọc & nhớ', exact: true }).click()
+  await page.getByRole('button', { name: 'Nghe từ dòng hiện tại' }).click()
+  await expect.poll(playback).toEqual({ paused: false, queued: 1, started: 3 })
+  await page.getByRole('button', { name: 'Tạm dừng nghe', exact: true }).click()
+  await page.getByRole('link', { name: '← Về bản văn đầy đủ' }).click()
+  await expect(page).toHaveURL(/\/full\?line=1/)
+  await expect.poll(playback).toEqual({ paused: true, queued: 0, started: 3 })
+  expect(
+    (await page.evaluate(() => (window as unknown as SpeechWindow).speechHarness.stats())).resumes
+  ).toBe(2)
+})
+
 type SpeechWindow = {
   speechHarness: {
     spoken: unknown[]
     end: (index: number) => void
     stats: () => { cancellations: number; pauses: number; resumes: number }
+    playback: () => { paused: boolean; queued: number; started: number }
   }
 }
