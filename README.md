@@ -27,6 +27,7 @@ Open http://localhost:3000. A different port can be selected with `pnpm dev --po
 - Topic discovery with Vietnamese words matched without conflating tones.
 - Bói Kiều: random original couplets, optional reflection prompt, and the last five draws in the current session.
 - Lẩy Kiều: generated 6/8-syllable pairs with source links. Matching uses the last syllable of the six-syllable line and the sixth syllable of the eight-syllable line, preserving vowel quality when stripping tone marks.
+- Xưởng Lẩy Kiều (`/lay-kieu/workshop`): a [14-feature composition workspace](POETRY-WORKSHOP.md) for selecting original lines, exploring rhymes, assembling seeded poems, keeping chosen stanzas, revising with undo/redo and saving private drafts with portable backups.
 - Chơi cùng Kiều (`/play`): missing-word, next-verse and verse-order games, plus a deterministic daily mixed challenge. Five-question sessions include hints, answer review, source links and bookmarks. Local XP, levels, best scores, completion streaks and four badges reward progress. Daily rewards are granted once per local date; replays are for practice.
 - Daily missions on `/play`: complete a session, answer ten questions correctly, and finish two distinct practice modes to claim a 20 XP bonus once per local day.
 - Mistake notebook (`/play/review`): revisit up to five missed or skipped questions from completed games. Answer correctly without a hint to remove a question. Review awards no XP and does not affect streaks or missions.
@@ -46,6 +47,8 @@ Rhyme suggestions compare written rhyme endings. They do not claim to fully vali
 Bookmarks, reading position and font size use the versioned `kieu-library-v1` browser storage key. They are not uploaded or synced to an account. If browser storage is unavailable, reading still works and changes remain in memory for the session. Export collections before clearing browser data.
 
 The reading room keeps excerpt queues, positions and private reflections in its separate `kieu-reading-room-v1` store. Its export/import controls affect only that notebook. Typed recall stays in memory and awards no XP. Read-aloud requires a Vietnamese device voice and starts only after a click; network-backed browser voices may send poem text to their speech service. Reflections are never supplied to speech or AI. See [reading room behavior and limits](READING-ROOM.md).
+
+The poetry workshop uses the independent `kieu-workshop-v1` store for explicitly saved compositions. Drafts contain source IDs, titles, private reflections and editing metadata. Share links contain only source pairs; exported files may contain reflections. Workshop editing awards no XP and makes no AI requests. Existing Lẩy Kiều generation and adventure rewards keep their original behavior.
 
 Library changes are shared with other tabs on the same browser. Updates reread the latest saved library, and clearing it in another tab is respected instead of restoring old bookmarks on the next preference change. Simultaneous writes remain best effort.
 

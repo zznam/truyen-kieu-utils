@@ -23,6 +23,7 @@ Page-specific styles remain beside their routes. Shared UI primitives live in `c
 | Flashcards, expeditions and arena rules                     | `lib/studio.ts`, `lib/expeditions.ts`, `lib/arena.ts`                                         |
 | Validated browser stores for those learning areas           | `hooks/use-local-store.ts`                                                                    |
 | Lẩy Kiều generation and optional Gemini requests            | `app/services/`, `app/api/`                                                                   |
+| Source-based poetry composition and saved drafts            | `lib/poetry-workshop.ts`, `components/poetry-workshop/`, `app/lay-kieu/workshop/`             |
 
 ## Make changes easy to follow
 
